@@ -5,7 +5,7 @@ namespace StudentAccounting.Domain
     /// <summary>
     /// сущность сотрудника
     /// </summary>
-    public class Employee
+    public class Employee: BaseEntity
     {
         /// <summary>
         /// фамилия
@@ -61,6 +61,11 @@ namespace StudentAccounting.Domain
         /// Дата увольнения
         /// </summary>
         public DateOnly? DismissalDate { get; set; }
+
+         /// <summary>
+         /// список полученных образований
+         /// </summary>
+        public List<Education> Educations { get; set; } = [];
 
     }
 }
