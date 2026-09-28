@@ -47,5 +47,10 @@ namespace StudentAccounting.Domain
         /// </summary>
         public ProgramStatus Status { get; set; }
 
+        /// <summary>
+        /// Заблаговременность уведомления о повторном обучении (в днях)
+        /// Если не задана - по умолчанию 60 дней
+        /// </summary>
+        public int NotificationLeadTimeDays { get; set; } = 60;
     }
 }
