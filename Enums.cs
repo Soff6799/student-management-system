@@ -24,10 +24,84 @@ namespace StudentAccounting.Domain
         /// </summary>
         public enum EducationLevel
         {
+            [Description("Высшее")]
             Higher,
+
+            [Description("Средне-профессиональное")]
             SecondaryVocational,
+
+            [Description("Среднее общее")]
             SecondaryGeneral,
+
+            [Description("Иное")]
             Other
         }
+
+        /// <summary>
+        /// Требования к образованию
+        /// </summary>
+        public enum RequirementsEducation
+        {
+            [Description("Не требуется")]
+            NotRequired,
+
+            [Description("Среднее общее")]
+            SecondaryGeneral,
+
+            [Description("Средне-профессиональное")]
+            SecondaryVocational,
+
+            [Description("Высшее")]
+            Higher,
+
+            [Description("Иное")]
+            Other
+        }
+
+        /// <summary>
+        /// Переодичность повторного обучения
+        /// </summary>
+        public enum RetrainingPeriodicity
+        {
+            [Description("Не требуется")]
+            NotRequired,
+
+            [Description("1 год")]
+            OneYear,
+
+            [Description("3 года")]
+            ThreeYears,
+
+            [Description("5 лет")]
+            FiveYears,
+
+            [Description("Произвольный срок (в месяцах)")]
+            CustomInMonths
+        }
+
+        /// <summary>
+        /// Единица измерения срока обучения
+        /// </summary>
+        public enum DurationUnit
+        {
+            [Description("Часов")]
+            Hours,
+
+            [Description("Дней")]
+            Days
+        }
+
+        /// <summary>
+        /// Статус программы обучения.
+        /// </summary>
+        public enum ProgramStatus
+        {
+            [Description("Активна")]
+            Active,
+
+            [Description("Архив")]
+            Archive
+        }
+
     }
 }

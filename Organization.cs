@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace StudentAccounting.Domain
+﻿namespace StudentAccounting.Domain
 {
     /// <summary>
     /// Карточка организации
