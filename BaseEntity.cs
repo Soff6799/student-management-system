@@ -5,7 +5,7 @@ using System.Text;
 namespace StudentAccounting.Domain
 {
     /// <summary>
-    /// 
+    /// Общие поля для сущностей
     /// </summary>
     public class BaseEntity
     {
