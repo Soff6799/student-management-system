@@ -103,5 +103,22 @@ namespace StudentAccounting.Domain
             Archive
         }
 
+        /// <summary>
+        /// Статус группы обучения (TrainingGroups.cs)
+        /// </summary>
+        public enum GroupStatus
+        {
+            [Description("Набор")]
+            Recruitment,
+
+            [Description("Идет обучение")]
+            InTraining,
+
+            [Description("Завершена")]
+            Completed,
+
+            [Description("Отменена")]
+            Cancelled
+        }
     }
 }
