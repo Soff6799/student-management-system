@@ -120,5 +120,24 @@ namespace StudentAccounting.Domain
             [Description("Отменена")]
             Cancelled
         }
+
+        /// <summary>
+        /// Статус прохождения обучения сотрудником (StudentTraining.cs)
+        /// </summary>
+        public enum TrainingStatus
+        {
+            [Description("Зачислен")]
+            Enrolled,
+
+            [Description("Обучается")]
+            InTraining,
+
+            [Description("Прошел обучение")]
+            Completed,
+
+            [Description("Отчислен")]
+            DroppedOut
+        }
+
     }
 }

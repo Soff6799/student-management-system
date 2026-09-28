@@ -5,7 +5,7 @@ namespace StudentAccounting.Domain
     /// <summary>
     /// Сущность группы обучения
     /// </summary>
-    public class TrainingGroups: BaseEntity
+    public class TrainingGroup: BaseEntity
     {
         /// <summary>
         /// Название группы
