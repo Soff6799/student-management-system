@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace StudentAccounting.Domain
+﻿namespace StudentAccounting.Domain
 {
     /// <summary>
     /// Общие поля для сущностей
@@ -17,22 +13,32 @@ namespace StudentAccounting.Domain
         /// <summary>
         /// Дата и время создания
         /// </summary>
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+
+        /// <summary>
+        /// Идентификатор пользователя, который создал запись
+        /// </summary>
+        public Guid? CreatedById { get; set; }
 
         /// <summary>
         /// Кем создан
         /// </summary>
-        public string CreatedBy { get; set; } = string.Empty;
+        public User? CreatedBy { get; set; } 
 
         /// <summary>
         /// Дата и время обновления
         /// </summary>
-        public DateTimeOffset UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
+
+        /// <summary>
+        /// Идентификатор пользователя, который обновил запись
+        /// </summary>
+        public Guid? UpdatedById { get; set; }
 
         /// <summary>
         /// Кем обновлён
         /// </summary>
-        public string UpdatedBy { get; set; } = string.Empty;
+        public User? UpdatedBy { get; set; } 
 
         /// <summary>
         /// Дата и время удаления

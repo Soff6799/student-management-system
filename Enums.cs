@@ -139,5 +139,16 @@ namespace StudentAccounting.Domain
             DroppedOut
         }
 
+        /// <summary>
+        /// Роли пользователей программ 
+        /// </summary>
+        public enum UserRole
+        {
+            [Description("Администратор")]
+            Administrator,
+            [Description("Методист")]
+            Methodologist
+        }
+
     }
 }
