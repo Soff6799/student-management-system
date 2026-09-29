@@ -140,7 +140,7 @@ namespace StudentAccounting.Domain
         }
 
         /// <summary>
-        /// Роли пользователей программ 
+        /// Роли пользователей программ
         /// </summary>
         public enum UserRole
         {

@@ -67,5 +67,10 @@ namespace StudentAccounting.Domain
          /// </summary>
         public List<Education> Educations { get; set; } = [];
 
+        /// <summary>
+        /// коллекция обучений
+        /// </summary>
+        public List<StudentTraining> StudentTrainings { get; set; } = [];
+
     }
 }

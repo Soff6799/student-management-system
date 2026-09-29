@@ -52,5 +52,10 @@ namespace StudentAccounting.Domain
         /// Если не задана - по умолчанию 60 дней
         /// </summary>
         public int NotificationLeadTimeDays { get; set; } = 60;
+
+        /// <summary>
+        /// коллекция групп
+        /// </summary>
+        public List<TrainingGroup> TrainingGroups { get; set; } = [];
     }
 }

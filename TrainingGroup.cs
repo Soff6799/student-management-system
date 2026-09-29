@@ -42,5 +42,15 @@ namespace StudentAccounting.Domain
         /// </summary>
         public string? Note { get; set; }
 
+        /// <summary>
+        /// Коллекция записей о прохождении сотрудником программы
+        /// </summary>
+        public List<StudentTraining> StudentTrainings { get; set; } = [];
+
+        /// <summary>
+        /// Коллекция договоров
+        /// </summary>
+        public List<Contract> Contracts { get; set; } = [];
+
     }
 }

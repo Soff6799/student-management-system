@@ -64,5 +64,10 @@
         /// Примечание
         /// </summary>
         public string? Note { get; set; }
+
+        /// <summary>
+        /// коллекция сотрудников
+        /// </summary>
+        public List<Employee> Employees { get; set; } = [];
     }
 }
