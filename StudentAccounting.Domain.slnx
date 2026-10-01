@@ -1,6 +1,0 @@
-<Solution>
-  <Folder Name="/DataAccessLayer/">
-    <Project Path="../DataAccessLayer/StudentAccounting.Context/StudentAccounting.Context.csproj" Id="c169c138-d836-413f-be8d-45149b99ab62" />
-  </Folder>
-  <Project Path="StudentAccounting.Domain.csproj" />
-</Solution>
