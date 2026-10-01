@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="StudentAccounting.Context/StudentAccounting.Context.csproj" />
+  <Project Path="StudentAccounting.Domain/StudentAccounting.Domain.csproj" />
+</Solution>
