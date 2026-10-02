@@ -1,4 +1,8 @@
 ﻿namespace StudentAccounting.Domain
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2-database-migrations
 {
     /// <summary>
     /// Общие поля для сущностей
@@ -28,7 +32,11 @@
         /// <summary>
         /// Дата и время обновления
         /// </summary>
+<<<<<<< HEAD
         public DateTimeOffset? UpdatedAt { get; set; }
+=======
+        public DateTimeOffset UpdatedAt { get; set; }
+>>>>>>> 2-database-migrations
 
         /// <summary>
         /// Идентификатор пользователя, который обновил запись

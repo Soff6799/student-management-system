@@ -23,7 +23,10 @@ public class AppDbContext : DbContext
         // User
         modelBuilder.Entity<User>(entity =>
         {
+<<<<<<< HEAD
             entity.HasKey(e => e.Id);
+=======
+>>>>>>> 2-database-migrations
             entity.Property(e => e.Login).HasMaxLength(100).IsRequired();
             entity.Property(e => e.PasswordHash).HasMaxLength(255).IsRequired();
             entity.Property(e => e.LastName).HasMaxLength(100).IsRequired();
@@ -31,6 +34,7 @@ public class AppDbContext : DbContext
             entity.Property(e => e.MiddleName).HasMaxLength(100);
             entity.HasIndex(e => e.Login).IsUnique();
 
+<<<<<<< HEAD
             //  Разрываем цикл: User.CreatedBy → User (без обратной навигации)
             entity.HasOne(e => e.CreatedBy)
                   .WithMany()
@@ -44,12 +48,18 @@ public class AppDbContext : DbContext
 
             // Soft-delete фильтр
             entity.HasQueryFilter(e => e.DeletedAt == null);
+=======
+            entity.ConfigureBaseEntity();
+>>>>>>> 2-database-migrations
         });
 
         // Organization 
         modelBuilder.Entity<Organization>(entity =>
         {
+<<<<<<< HEAD
             entity.HasKey(e => e.Id);
+=======
+>>>>>>> 2-database-migrations
             entity.Property(e => e.FullName).HasMaxLength(500).IsRequired();
             entity.Property(e => e.ShortName).HasMaxLength(255).IsRequired();
             entity.Property(e => e.INN).HasMaxLength(12).IsRequired();
@@ -70,6 +80,7 @@ public class AppDbContext : DbContext
                   .HasForeignKey(emp => emp.OrganizationId)
                   .OnDelete(DeleteBehavior.SetNull);
 
+<<<<<<< HEAD
             // BaseEntity: CreatedBy / UpdatedBy
             entity.HasOne(e => e.CreatedBy)
                   .WithMany()
@@ -82,12 +93,18 @@ public class AppDbContext : DbContext
                   .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasQueryFilter(e => e.DeletedAt == null);
+=======
+            entity.ConfigureBaseEntity();
+>>>>>>> 2-database-migrations
         });
 
         // Employee 
         modelBuilder.Entity<Employee>(entity =>
         {
+<<<<<<< HEAD
             entity.HasKey(e => e.Id);
+=======
+>>>>>>> 2-database-migrations
             entity.Property(e => e.LastName).HasMaxLength(100).IsRequired();
             entity.Property(e => e.FirstName).HasMaxLength(100).IsRequired();
             entity.Property(e => e.Patronymic).HasMaxLength(100);
@@ -111,6 +128,7 @@ public class AppDbContext : DbContext
                   .HasForeignKey(st => st.EmployeeId)
                   .OnDelete(DeleteBehavior.Restrict);
 
+<<<<<<< HEAD
             // BaseEntity
             entity.HasOne(e => e.CreatedBy)
                   .WithMany()
@@ -123,12 +141,18 @@ public class AppDbContext : DbContext
                   .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasQueryFilter(e => e.DeletedAt == null);
+=======
+            entity.ConfigureBaseEntity();
+>>>>>>> 2-database-migrations
         });
 
         // Education 
         modelBuilder.Entity<Education>(entity =>
         {
+<<<<<<< HEAD
             entity.HasKey(e => e.Id);
+=======
+>>>>>>> 2-database-migrations
             entity.Property(e => e.InstitutionName).HasMaxLength(255).IsRequired();
             entity.Property(e => e.Specialty).HasMaxLength(255).IsRequired();
             entity.Property(e => e.FilePath).HasMaxLength(500).IsRequired();
@@ -139,6 +163,7 @@ public class AppDbContext : DbContext
                   .HasForeignKey(e => e.EmployeeId)
                   .OnDelete(DeleteBehavior.Cascade);
 
+<<<<<<< HEAD
             // BaseEntity
             entity.HasOne(e => e.CreatedBy)
                   .WithMany()
@@ -151,12 +176,18 @@ public class AppDbContext : DbContext
                   .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasQueryFilter(e => e.DeletedAt == null);
+=======
+            entity.ConfigureBaseEntity();
+>>>>>>> 2-database-migrations
         });
 
         //  TrainingProgram 
         modelBuilder.Entity<TrainingProgram>(entity =>
         {
+<<<<<<< HEAD
             entity.HasKey(e => e.Id);
+=======
+>>>>>>> 2-database-migrations
             entity.Property(e => e.Name).HasMaxLength(255).IsRequired();
             entity.Property(e => e.Description).HasMaxLength(2000);
             entity.Property(e => e.CostRubles).HasPrecision(18, 2);
@@ -167,6 +198,7 @@ public class AppDbContext : DbContext
                   .HasForeignKey(tg => tg.TrainingProgramId)
                   .OnDelete(DeleteBehavior.Restrict);
 
+<<<<<<< HEAD
             // BaseEntity
             entity.HasOne(e => e.CreatedBy)
                   .WithMany()
@@ -179,12 +211,18 @@ public class AppDbContext : DbContext
                   .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasQueryFilter(e => e.DeletedAt == null);
+=======
+            entity.ConfigureBaseEntity();
+>>>>>>> 2-database-migrations
         });
 
         // TrainingGroup 
         modelBuilder.Entity<TrainingGroup>(entity =>
         {
+<<<<<<< HEAD
             entity.HasKey(e => e.Id);
+=======
+>>>>>>> 2-database-migrations
             entity.Property(e => e.GroupName).HasMaxLength(255).IsRequired();
             entity.Property(e => e.Note).HasMaxLength(2000);
 
@@ -204,6 +242,7 @@ public class AppDbContext : DbContext
                   .HasForeignKey(c => c.TrainingGroupId)
                   .OnDelete(DeleteBehavior.Cascade);
 
+<<<<<<< HEAD
             // BaseEntity
             entity.HasOne(e => e.CreatedBy)
                   .WithMany()
@@ -216,12 +255,18 @@ public class AppDbContext : DbContext
                   .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasQueryFilter(e => e.DeletedAt == null);
+=======
+            entity.ConfigureBaseEntity();
+>>>>>>> 2-database-migrations
         });
 
         // StudentTraining
         modelBuilder.Entity<StudentTraining>(entity =>
         {
+<<<<<<< HEAD
             entity.HasKey(e => e.Id);
+=======
+>>>>>>> 2-database-migrations
             entity.Property(e => e.CertificateNumber).HasMaxLength(100);
             entity.Property(e => e.Note).HasMaxLength(2000);
 
@@ -236,6 +281,7 @@ public class AppDbContext : DbContext
                   .HasForeignKey(e => e.TrainingGroupId)
                   .OnDelete(DeleteBehavior.Cascade);
 
+<<<<<<< HEAD
             // BaseEntity
             entity.HasOne(e => e.CreatedBy)
                   .WithMany()
@@ -248,12 +294,18 @@ public class AppDbContext : DbContext
                   .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasQueryFilter(e => e.DeletedAt == null);
+=======
+            entity.ConfigureBaseEntity();
+>>>>>>> 2-database-migrations
         });
 
         // Contract
         modelBuilder.Entity<Contract>(entity =>
         {
+<<<<<<< HEAD
             entity.HasKey(e => e.Id);
+=======
+>>>>>>> 2-database-migrations
             entity.Property(e => e.ContractNumber).HasMaxLength(50).IsRequired();
             entity.Property(e => e.FilePath).HasMaxLength(500).IsRequired();
             entity.HasIndex(e => e.ContractNumber).IsUnique();
@@ -264,6 +316,7 @@ public class AppDbContext : DbContext
                   .HasForeignKey(e => e.TrainingGroupId)
                   .OnDelete(DeleteBehavior.Cascade);
 
+<<<<<<< HEAD
             // BaseEntity
             entity.HasOne(e => e.CreatedBy)
                   .WithMany()
@@ -277,5 +330,10 @@ public class AppDbContext : DbContext
 
             entity.HasQueryFilter(e => e.DeletedAt == null);
         });
+=======
+            entity.ConfigureBaseEntity();
+        });
+
+>>>>>>> 2-database-migrations
     }
 }
