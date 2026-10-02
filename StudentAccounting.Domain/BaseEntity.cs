@@ -1,4 +1,5 @@
 ﻿namespace StudentAccounting.Domain
+
 {
     /// <summary>
     /// Общие поля для сущностей
@@ -28,7 +29,7 @@
         /// <summary>
         /// Дата и время обновления
         /// </summary>
-        public DateTimeOffset? UpdatedAt { get; set; }
+        public DateTimeOffset UpdatedAt { get; set; }
 
         /// <summary>
         /// Идентификатор пользователя, который обновил запись
