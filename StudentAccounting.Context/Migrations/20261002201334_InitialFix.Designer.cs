@@ -12,8 +12,8 @@ using StudentAccounting.Infrastructure.Data;
 namespace StudentAccounting.Context.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261001124726_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20261002201334_InitialFix")]
+    partial class InitialFix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,7 +56,7 @@ namespace StudentAccounting.Context.Migrations
                     b.Property<Guid>("TrainingGroupId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<Guid?>("UpdatedById")
@@ -115,7 +115,7 @@ namespace StudentAccounting.Context.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<Guid?>("UpdatedById")
@@ -185,7 +185,7 @@ namespace StudentAccounting.Context.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<Guid?>("UpdatedById")
@@ -271,7 +271,7 @@ namespace StudentAccounting.Context.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<Guid?>("UpdatedById")
@@ -327,7 +327,7 @@ namespace StudentAccounting.Context.Migrations
                     b.Property<Guid>("TrainingGroupId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<Guid?>("UpdatedById")
@@ -382,7 +382,7 @@ namespace StudentAccounting.Context.Migrations
                     b.Property<Guid>("TrainingProgramId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<Guid?>("UpdatedById")
@@ -445,7 +445,7 @@ namespace StudentAccounting.Context.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<Guid?>("UpdatedById")
@@ -508,7 +508,7 @@ namespace StudentAccounting.Context.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<Guid?>("UpdatedById")
@@ -531,7 +531,7 @@ namespace StudentAccounting.Context.Migrations
                     b.HasOne("StudentAccounting.Domain.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("StudentAccounting.Domain.TrainingGroup", "TrainingGroup")
                         .WithMany("Contracts")
@@ -542,7 +542,7 @@ namespace StudentAccounting.Context.Migrations
                     b.HasOne("StudentAccounting.Domain.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("CreatedBy");
 
@@ -556,7 +556,7 @@ namespace StudentAccounting.Context.Migrations
                     b.HasOne("StudentAccounting.Domain.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("StudentAccounting.Domain.Employee", "Employee")
                         .WithMany("Educations")
@@ -567,7 +567,7 @@ namespace StudentAccounting.Context.Migrations
                     b.HasOne("StudentAccounting.Domain.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("CreatedBy");
 
@@ -581,7 +581,7 @@ namespace StudentAccounting.Context.Migrations
                     b.HasOne("StudentAccounting.Domain.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("StudentAccounting.Domain.Organization", "Organization")
                         .WithMany("Employees")
@@ -591,7 +591,7 @@ namespace StudentAccounting.Context.Migrations
                     b.HasOne("StudentAccounting.Domain.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("CreatedBy");
 
@@ -605,12 +605,12 @@ namespace StudentAccounting.Context.Migrations
                     b.HasOne("StudentAccounting.Domain.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("StudentAccounting.Domain.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("CreatedBy");
 
@@ -622,7 +622,7 @@ namespace StudentAccounting.Context.Migrations
                     b.HasOne("StudentAccounting.Domain.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("StudentAccounting.Domain.Employee", "Employee")
                         .WithMany("StudentTrainings")
@@ -639,7 +639,7 @@ namespace StudentAccounting.Context.Migrations
                     b.HasOne("StudentAccounting.Domain.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("CreatedBy");
 
@@ -655,7 +655,7 @@ namespace StudentAccounting.Context.Migrations
                     b.HasOne("StudentAccounting.Domain.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("StudentAccounting.Domain.TrainingProgram", "TrainingProgram")
                         .WithMany("TrainingGroups")
@@ -666,7 +666,7 @@ namespace StudentAccounting.Context.Migrations
                     b.HasOne("StudentAccounting.Domain.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("CreatedBy");
 
@@ -680,12 +680,12 @@ namespace StudentAccounting.Context.Migrations
                     b.HasOne("StudentAccounting.Domain.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("StudentAccounting.Domain.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("CreatedBy");
 
@@ -697,12 +697,12 @@ namespace StudentAccounting.Context.Migrations
                     b.HasOne("StudentAccounting.Domain.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("StudentAccounting.Domain.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("CreatedBy");
 
