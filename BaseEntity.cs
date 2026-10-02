@@ -1,0 +1,48 @@
+﻿namespace StudentAccounting.Domain
+{
+    /// <summary>
+    /// Общие поля для сущностей
+    /// </summary>
+    public class BaseEntity
+    {
+        /// <summary>
+        /// Идентификатор
+        /// </summary>
+        public Guid Id { get; set; }
+
+        /// <summary>
+        /// Дата и время создания
+        /// </summary>
+        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+
+        /// <summary>
+        /// Идентификатор пользователя, который создал запись
+        /// </summary>
+        public Guid? CreatedById { get; set; }
+
+        /// <summary>
+        /// Кем создан
+        /// </summary>
+        public User? CreatedBy { get; set; } 
+
+        /// <summary>
+        /// Дата и время обновления
+        /// </summary>
+        public DateTimeOffset? UpdatedAt { get; set; }
+
+        /// <summary>
+        /// Идентификатор пользователя, который обновил запись
+        /// </summary>
+        public Guid? UpdatedById { get; set; }
+
+        /// <summary>
+        /// Кем обновлён
+        /// </summary>
+        public User? UpdatedBy { get; set; } 
+
+        /// <summary>
+        /// Дата и время удаления
+        /// </summary>
+        public DateTimeOffset? DeletedAt { get; set; }
+    }
+}
