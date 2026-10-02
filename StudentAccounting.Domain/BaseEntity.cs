@@ -3,7 +3,7 @@
     /// <summary>
     /// Общие поля для сущностей
     /// </summary>
-    public class BaseEntity
+    public class BaseEntity : IBaseEntity
     {
         /// <summary>
         /// Идентификатор
@@ -23,7 +23,7 @@
         /// <summary>
         /// Кем создан
         /// </summary>
-        public User? CreatedBy { get; set; } 
+        public User? CreatedBy { get; set; }
 
         /// <summary>
         /// Дата и время обновления
@@ -38,7 +38,7 @@
         /// <summary>
         /// Кем обновлён
         /// </summary>
-        public User? UpdatedBy { get; set; } 
+        public User? UpdatedBy { get; set; }
 
         /// <summary>
         /// Дата и время удаления

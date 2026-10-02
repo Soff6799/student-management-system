@@ -34,12 +34,12 @@ public class AppDbContext : DbContext
             entity.HasOne(e => e.CreatedBy)
                   .WithMany()
                   .HasForeignKey(e => e.CreatedById)
-                  .OnDelete(DeleteBehavior.SetNull);
+                  .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasOne(e => e.UpdatedBy)
                   .WithMany()
                   .HasForeignKey(e => e.UpdatedById)
-                  .OnDelete(DeleteBehavior.SetNull);
+                  .OnDelete(DeleteBehavior.NoAction);
 
             entity.HasQueryFilter(e => e.DeletedAt == null);
         });
