@@ -34,37 +34,21 @@ bld/
 [Ll]ogs/
 
 # Visual Studio 2015/2017 cache/options directory
-# Visual Studio
 .vs/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/
-# Rider
-.idea/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
-# NuGet
-*.nupkg
-**/[Pp]ackages/*
-!**/[Pp]ackages/build/
 
 # NUnit
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
-# User-specific files
-*.rsuser
-*.suo
-*.user
-*.userprefs
 
 # Build Results of an ATL Project
 [Dd]ebugPS/
@@ -105,8 +89,6 @@ StyleCopReport.xml
 *.tlh
 *.tmp
 *.tmp_proj
-# Backup files
-*~
 *_wpftmp.csproj
 *.log
 *.vspscc
@@ -115,14 +97,9 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
-*.bak
 
 # Chutzpah Test files
 _Chutzpah*
-# Test results
-[Tt]est[Rr]esult*/
-*.VisualState.xml
-TestResult.xml
 
 # Visual C++ cache files
 ipch/
@@ -166,7 +143,6 @@ _TeamCity*
 !.axoCover/settings.json
 
 # Coverlet is a free, cross platform Code Coverage Tool
-# Coverage
 coverage*.json
 coverage*.xml
 coverage*.info
@@ -260,8 +236,6 @@ ClientBin/
 *.dbmdl
 *.dbproj.schemaview
 *.jfm
-# Secrets
-.env
 *.pfx
 *.publishsettings
 orleans.codegen.cs
@@ -288,7 +262,6 @@ ServiceFabricBackup/
 *.rptproj.bak
 
 # SQL Server files
-# SQL Server
 *.mdf
 *.ldf
 *.ndf
@@ -310,7 +283,6 @@ FakesAssemblies/
 
 # Node.js Tools for Visual Studio
 .ntvs_analysis.dat
-# Node modules (if using frontend)
 node_modules/
 
 # Visual Studio 6 build log
