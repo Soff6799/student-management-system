@@ -21,8 +21,4 @@
 		<ProjectReference Include="..\StudentAccounting.Dal.Contracts\StudentAccounting.Dal.Contracts.csproj" />
 		<ProjectReference Include="..\StudentAccounting.Domain\StudentAccounting.Domain.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="DTOs\Contract\" />
-	</ItemGroup>
 </Project>
