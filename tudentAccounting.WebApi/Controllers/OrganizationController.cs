@@ -5,6 +5,9 @@ using StudentAccounting.WebApi.Services.Organization;
 
 namespace StudentAccounting.WebApi.Controllers;
 
+/// <summary>
+/// Контроллер для управления данными организаций
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]

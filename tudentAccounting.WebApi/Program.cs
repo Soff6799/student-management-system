@@ -7,6 +7,7 @@ using StudentAccounting.WebApi.Services.Auth;
 using System.Text;
 using StudentAccounting.Dal.Contracts.interfaces;
 using StudentAccounting.Context.Repositories;
+using StudentAccounting.WebApi.Services.Organization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +54,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IOrganizationService, OrganizationService>();
 
 var app = builder.Build();
 
