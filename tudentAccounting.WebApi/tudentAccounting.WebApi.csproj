@@ -23,7 +23,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="DTOs\TrainingGroup\" />
 	  <Folder Include="DTOs\StudentTraining\" />
 	  <Folder Include="DTOs\Contract\" />
 	</ItemGroup>
