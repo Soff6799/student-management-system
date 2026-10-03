@@ -46,7 +46,6 @@ public class AppDbContext : DbContext
             entity.Property(e => e.ContactPersonPosition).HasMaxLength(255);
             entity.Property(e => e.Note).HasMaxLength(2000);
             entity.HasIndex(e => e.INN).IsUnique();
-
             entity.HasMany(e => e.Employees).WithOne(emp => emp.Organization).HasForeignKey(emp => emp.OrganizationId).OnDelete(DeleteBehavior.SetNull);
             entity.ConfigureBaseEntity();
         });
@@ -59,7 +58,6 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Phone).HasMaxLength(20);
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.Post).HasMaxLength(255);
-
             entity.HasOne(e => e.Organization).WithMany(org => org.Employees).HasForeignKey(e => e.OrganizationId).OnDelete(DeleteBehavior.SetNull);
             entity.HasMany(e => e.Educations).WithOne(ed => ed.Employee).HasForeignKey(ed => ed.EmployeeId).OnDelete(DeleteBehavior.Cascade);
             entity.HasMany(e => e.StudentTrainings).WithOne(st => st.Employee).HasForeignKey(st => st.EmployeeId).OnDelete(DeleteBehavior.Restrict);
