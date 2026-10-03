@@ -12,8 +12,8 @@ using StudentAccounting.Infrastructure.Data;
 namespace StudentAccounting.Context.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261002201334_InitialFix")]
-    partial class InitialFix
+    [Migration("20261002224712_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
