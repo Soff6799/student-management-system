@@ -23,7 +23,7 @@ public static class EntityTypeBuilderExtensions
     /// Настраивает связи аудита (CreatedBy + UpdatedBy) с NoAction
     /// </summary>
     public static EntityTypeBuilder<T> ConfigureAuditRelations<T>(this EntityTypeBuilder<T> builder)
-        where T : class, IBaseEntity
+        where T : BaseEntity
     {
         builder.HasOne(e => e.CreatedBy)
                .WithMany()
@@ -42,7 +42,7 @@ public static class EntityTypeBuilderExtensions
     /// Настраивает soft-delete фильтр по DeletedAt
     /// </summary>
     public static EntityTypeBuilder<T> ConfigureSoftDelete<T>(this EntityTypeBuilder<T> builder)
-        where T : class, IBaseEntity
+        where T : BaseEntity
     {
         builder.HasQueryFilter(e => e.DeletedAt == null);
         return builder;
@@ -52,7 +52,7 @@ public static class EntityTypeBuilderExtensions
     /// Настраивает все стандартные поля (Id + аудит + soft-delete)
     /// </summary>
     public static EntityTypeBuilder<T> ConfigureBaseEntity<T>(this EntityTypeBuilder<T> builder)
-        where T : class, IBaseEntity
+        where T : BaseEntity
     {
         builder.HasIdAsKey();
         builder.ConfigureAuditRelations();

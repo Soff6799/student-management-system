@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\StudentAccounting.Dal.Contracts\StudentAccounting.Dal.Contracts.csproj" />
     <ProjectReference Include="..\StudentAccounting.Domain\StudentAccounting.Domain.csproj" />
   </ItemGroup>
 
