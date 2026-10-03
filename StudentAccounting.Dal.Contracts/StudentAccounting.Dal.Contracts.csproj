@@ -10,8 +10,4 @@
     <ProjectReference Include="..\StudentAccounting.Domain\StudentAccounting.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Repositories\" />
-  </ItemGroup>
-
 </Project>
