@@ -1,8 +1,9 @@
-﻿using System.Linq.Expressions;
+﻿using StudentAccounting.Domain;
+using System.Linq.Expressions;
 
 namespace StudentAccounting.Dal.Contracts.interfaces
 {
-    public interface IRepository<T> where T : class
+    public interface IRepository<T> where T : IBaseEntity
     {
         /// <summary>
         /// Получить все сущности
