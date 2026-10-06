@@ -86,8 +86,8 @@ public class StudentTrainingService : IStudentTrainingService
         if (dto.Status == TrainingStatus.Completed)
         {
             training.CompletionDate ??= DateOnly.FromDateTime(DateTime.UtcNow);
-
-            var months = GetPeriodicityMonths(training.TrainingGroup?.TrainingProgram?.RetrainingPeriodicity);
+            var program = training.TrainingGroup?.TrainingProgram;
+            var months = GetPeriodicityMonths(program?.RetrainingPeriodicity, program?.CustomRetrainingMonths);
             if (months.HasValue)
             {
                 training.NextTrainingDate = training.CompletionDate.Value.AddMonths(months.Value);
@@ -123,21 +123,28 @@ public class StudentTrainingService : IStudentTrainingService
             .Include(g => g.TrainingProgram)
             .FirstOrDefaultAsync(g => g.Id == trainingGroupId);
 
-        var months = GetPeriodicityMonths(trainingGroup?.TrainingProgram?.RetrainingPeriodicity);
+        var program = trainingGroup?.TrainingProgram;
+        var months = GetPeriodicityMonths(program?.RetrainingPeriodicity, program?.CustomRetrainingMonths);
+
         return months.HasValue ? completionDate.AddMonths(months.Value) : null;
     }
 
     /// <summary>
-    /// Преобразует периодичность повторного обучения в количество месяцев.
-    /// Значения enum хранятся в месяцах
+    /// Преобразует периодичность повторного обучения в количество месяцев
     /// </summary>
-    private static int? GetPeriodicityMonths(RetrainingPeriodicity? periodicity)
+    private static int? GetPeriodicityMonths(RetrainingPeriodicity? periodicity, int? customMonths)
     {
         if (periodicity is null)
             return null;
 
-        var months = (int)periodicity.Value;
-        return months > 0 ? months : null;
+        return periodicity.Value switch
+        {
+            RetrainingPeriodicity.OneYear => 12,
+            RetrainingPeriodicity.ThreeYears => 36,
+            RetrainingPeriodicity.FiveYears => 60,
+            RetrainingPeriodicity.CustomInMonths => customMonths,
+            _ => null // NotRequired или не задано
+        };
     }
 
     private static StudentTrainingDto MapToDto(DomainStudentTraining training)
