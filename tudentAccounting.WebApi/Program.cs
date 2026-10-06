@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using StudentAccounting.Context.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using StudentAccounting.Context.Repositories;
+using StudentAccounting.Dal.Contracts.interfaces;
 using StudentAccounting.Infrastructure.Data;
 using StudentAccounting.WebApi.Services.Auth;
-using System.Text;
-using StudentAccounting.Dal.Contracts.interfaces;
+using StudentAccounting.WebApi.Services.Employee;
 using StudentAccounting.WebApi.Services.Organization;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -109,6 +110,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IOrganizationService, OrganizationService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 var app = builder.Build();
 
