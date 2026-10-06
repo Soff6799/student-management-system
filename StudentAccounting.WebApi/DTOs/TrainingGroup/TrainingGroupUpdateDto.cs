@@ -3,13 +3,15 @@ using static StudentAccounting.Domain.Enums;
 
 namespace StudentAccounting.WebApi.DTOs.TrainingGroup;
 
-public class TrainingGroupCreateDto : IValidatableObject
+public class TrainingGroupUpdateDto : IValidatableObject
 {
+    [Required]
+    public Guid Id { get; set; }
+
     [Required]
     [MaxLength(255)]
     public string GroupName { get; set; } = string.Empty;
 
-    /// <summary>Программа обучения (только активные проверяются в сервисе)</summary>
     [Required]
     public Guid TrainingProgramId { get; set; }
 
@@ -18,7 +20,7 @@ public class TrainingGroupCreateDto : IValidatableObject
 
     public DateOnly? EndDate { get; set; }
 
-    public GroupStatus Status { get; set; } = GroupStatus.Recruitment;
+    public GroupStatus Status { get; set; }
 
     [MaxLength(2000)]
     public string? Note { get; set; }
