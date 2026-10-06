@@ -6,10 +6,13 @@ using StudentAccounting.Dal.Contracts.interfaces;
 using StudentAccounting.Domain;
 using StudentAccounting.Infrastructure.Data;
 using StudentAccounting.WebApi.Services.Auth;
+using StudentAccounting.WebApi.Services.Contract;
 using StudentAccounting.WebApi.Services.Education;
 using StudentAccounting.WebApi.Services.Employee;
 using StudentAccounting.WebApi.Services.Organization;
 using StudentAccounting.WebApi.Services.StudentTraining;
+using StudentAccounting.WebApi.Services.TrainingGroup;
+using StudentAccounting.WebApi.Services.TrainingProgram;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -116,6 +119,10 @@ builder.Services.AddScoped<IOrganizationService, OrganizationService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IEducationService, EducationService>();
 builder.Services.AddScoped<IStudentTrainingService, StudentTrainingService>();
+builder.Services.AddScoped<ITrainingProgramService, TrainingProgramService>();
+builder.Services.AddScoped<ITrainingGroupService, TrainingGroupService>();
+builder.Services.AddScoped<IContractService, ContractService>();
+
 
 var app = builder.Build();
 
