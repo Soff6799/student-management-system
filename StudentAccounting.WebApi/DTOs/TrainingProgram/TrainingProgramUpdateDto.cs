@@ -3,8 +3,11 @@ using static StudentAccounting.Domain.Enums;
 
 namespace StudentAccounting.WebApi.DTOs.TrainingProgram;
 
-public class TrainingProgramCreateDto
+public class TrainingProgramUpdateDto : IValidatableObject
 {
+    [Required]
+    public Guid Id { get; set; }
+
     [Required]
     [MaxLength(255)]
     public string Name { get; set; } = string.Empty;
@@ -14,31 +17,22 @@ public class TrainingProgramCreateDto
 
     [Required]
     [Range(0, double.MaxValue)]
-    public decimal? CostRubles { get; set; }
+    public decimal CostRubles { get; set; }
 
     public RequirementsEducation? RequirementsEducation { get; set; }
 
-    /// <summary>Периодичность повторного обучения (обязательно по ТЗ)</summary>
     public RetrainingPeriodicity RetrainingPeriodicity { get; set; }
 
-    /// <summary>Заполняется только при RetrainingPeriodicity = CustomInMonths</summary>
     [Range(1, 1200)]
     public int? CustomRetrainingMonths { get; set; }
 
-    /// <summary>
-    /// Срок обучения: значение
-    /// </summary>
     [Range(1, int.MaxValue)]
     public int? DurationValue { get; set; }
 
-    /// <summary>
-    /// Срок обучения: единица измерения (часов/дней)
-    /// </summary>
     public DurationUnit? DurationUnit { get; set; }
 
-    /// <summary>
-    /// Заблаговременность уведомления, по умолчанию 60 дней (ТЗ 4.f.iii)
-    /// </summary>
+    public ProgramStatus Status { get; set; }
+
     [Range(0, 365)]
     public int NotificationLeadTimeDays { get; set; } = 60;
 
