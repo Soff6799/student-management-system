@@ -6,7 +6,6 @@ using StudentAccounting.WebApi.DTOs.Auth;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using tudentAccounting.WebApi.DTOs.Auth;
 
 namespace StudentAccounting.WebApi.Services.Auth;
 
@@ -72,8 +71,20 @@ public class AuthService : IAuthService
     private string GenerateJwtToken(User user)
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
-        var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!));
-        var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+        var secretKey = jwtSettings["SecretKey"]!;
+        var issuer = jwtSettings["Issuer"];
+        var audience = jwtSettings["Audience"];
+        var expiresMinutes = jwtSettings["ExpiresInMinutes"];
+
+        Console.WriteLine("=== GenerateJwtToken ===");
+        Console.WriteLine($"SecretKey: '{secretKey}' (длина: {secretKey.Length})");
+        Console.WriteLine($"Issuer: '{issuer}'");
+        Console.WriteLine($"Audience: '{audience}'");
+        Console.WriteLine($"ExpiresInMinutes: '{expiresMinutes}'");
+        Console.WriteLine("========================");
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
         {
@@ -83,11 +94,11 @@ public class AuthService : IAuthService
         };
 
         var token = new JwtSecurityToken(
-            issuer: jwtSettings["Issuer"],
-            audience: jwtSettings["Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(double.Parse(jwtSettings["ExpiresInMinutes"]!)),
-            signingCredentials: credentials
+            issuer: issuer,
+        audience: audience,
+        claims: claims,
+        expires: DateTime.UtcNow.AddMinutes(double.Parse(expiresMinutes!)),
+        signingCredentials: credentials
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);

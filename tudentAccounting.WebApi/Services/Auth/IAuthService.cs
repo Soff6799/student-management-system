@@ -1,5 +1,4 @@
 ﻿using StudentAccounting.WebApi.DTOs.Auth;
-using tudentAccounting.WebApi.DTOs.Auth;
 
 namespace StudentAccounting.WebApi.Services.Auth;
 

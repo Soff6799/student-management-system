@@ -13,7 +13,7 @@ public static class EntityTypeBuilderExtensions
     /// Настраивает первичный ключ Id
     /// </summary>
     public static EntityTypeBuilder<T> HasIdAsKey<T>(this EntityTypeBuilder<T> builder)
-        where T : class, IBaseEntity
+        where T : BaseEntity
     {
         builder.HasKey(e => e.Id);
         return builder;
@@ -39,7 +39,7 @@ public static class EntityTypeBuilderExtensions
     }
 
     /// <summary>
-    /// Настраивает soft-delete фильтр по DeletedAt
+    /// soft-delete фильтр по DeletedAt
     /// </summary>
     public static EntityTypeBuilder<T> ConfigureSoftDelete<T>(this EntityTypeBuilder<T> builder)
         where T : BaseEntity

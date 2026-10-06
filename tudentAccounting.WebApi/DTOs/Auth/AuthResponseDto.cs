@@ -1,4 +1,4 @@
-﻿namespace tudentAccounting.WebApi.DTOs.Auth
+﻿namespace StudentAccounting.WebApi.DTOs.Auth
 {
     /// <summary>
     /// Объект передачи данных (DTO) с результатами успешной аутентификации или регистрации
