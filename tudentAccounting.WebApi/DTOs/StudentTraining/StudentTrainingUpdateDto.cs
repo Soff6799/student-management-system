@@ -3,16 +3,13 @@ using static StudentAccounting.Domain.Enums;
 
 namespace StudentAccounting.WebApi.DTOs.StudentTraining;
 
-public class StudentTrainingCreateDto
+public class StudentTrainingUpdateDto
 {
     [Required]
-    public Guid EmployeeId { get; set; }
+    public Guid Id { get; set; }
 
     [Required]
-    public Guid TrainingGroupId { get; set; }
-
-    [Required]
-    public TrainingStatus Status { get; set; } = TrainingStatus.Enrolled;
+    public TrainingStatus Status { get; set; }
 
     public DateOnly? CompletionDate { get; set; }
 
