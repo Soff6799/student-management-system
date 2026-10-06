@@ -14,7 +14,7 @@ public class TrainingProgramCreateDto
 
     [Required]
     [Range(0, double.MaxValue)]
-    public decimal? CostRubles { get; set; }
+    public decimal CostRubles { get; set; }
 
     public RequirementsEducation? RequirementsEducation { get; set; }
 
