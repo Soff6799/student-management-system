@@ -38,6 +38,12 @@ namespace StudentAccounting.Domain
         public int? DurationValue { get; set; }
 
         /// <summary>
+        /// Произвольный срок повторного обучения в месяцах.
+        /// Заполняется только при RetrainingPeriodicity = CustomInMonths
+        /// </summary>
+        public int? CustomRetrainingMonths { get; set; }
+
+        /// <summary>
         /// Единица измерения срока обучения (часы или дни)
         /// </summary>
         public DurationUnit? DurationUnit { get; set; }

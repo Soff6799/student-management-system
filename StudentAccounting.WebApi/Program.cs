@@ -3,10 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StudentAccounting.Context.Repositories;
 using StudentAccounting.Dal.Contracts.interfaces;
+using StudentAccounting.Domain;
 using StudentAccounting.Infrastructure.Data;
 using StudentAccounting.WebApi.Services.Auth;
+using StudentAccounting.WebApi.Services.Education;
 using StudentAccounting.WebApi.Services.Employee;
 using StudentAccounting.WebApi.Services.Organization;
+using StudentAccounting.WebApi.Services.StudentTraining;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -111,6 +114,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IOrganizationService, OrganizationService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IEducationService, EducationService>();
+builder.Services.AddScoped<IStudentTrainingService, StudentTrainingService>();
 
 var app = builder.Build();
 

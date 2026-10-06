@@ -1,14 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static StudentAccounting.Domain.Enums;
 
 namespace StudentAccounting.WebApi.DTOs.StudentTraining;
 
-public class StudentTrainingCreateDto
+public class StudentTrainingUpdateDto
 {
     [Required]
-    public Guid EmployeeId { get; set; }
+    public Guid Id { get; set; }
 
     [Required]
-    public Guid TrainingGroupId { get; set; }
+    public TrainingStatus Status { get; set; }
+
+    public DateOnly? CompletionDate { get; set; }
 
     [MaxLength(100)]
     public string? CertificateNumber { get; set; }
