@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StudentAccounting.WebApi.DTOs.Common;
 using StudentAccounting.WebApi.DTOs.Employee;
 using StudentAccounting.WebApi.Services.Employee;
+using StudentAccounting.WebApi.Services.Excel;
 
 namespace StudentAccounting.WebApi.Controllers;
 
@@ -14,20 +16,22 @@ namespace StudentAccounting.WebApi.Controllers;
 public class EmployeeController : ControllerBase
 {
     private readonly IEmployeeService _service;
+    private readonly IExcelExportService _excel;
 
-    public EmployeeController(IEmployeeService service)
+    public EmployeeController(IEmployeeService service, IExcelExportService excel)
     {
         _service = service;
+        _excel = excel;
     }
 
     /// <summary>
-    /// Получить всех сотрудников
+    /// Получить сотрудников с поиском, фильтрами, сортировкой и пагинацией
+    /// уволенные скрыты по умолчанию includeDismissed=true покажет их
     /// </summary>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetAll()
+    public async Task<ActionResult<PagedResultDto<EmployeeDto>>> GetAll([FromQuery] EmployeeListParams p)
     {
-        var employees = await _service.GetAllAsync();
-        return Ok(employees);
+        return Ok(await _service.GetPagedAsync(p));
     }
 
     /// <summary>
@@ -90,5 +94,18 @@ public class EmployeeController : ControllerBase
         {
             return NotFound();
         }
+    }
+
+    /// <summary>
+    /// Выгрузка сотрудников в XLSX с учётом фильтров и поиска
+    /// </summary>
+    [HttpGet("export")]
+    public async Task<IActionResult> Export([FromQuery] EmployeeListParams p)
+    {
+        var data = await _service.GetFilteredAsync(p);
+        var file = _excel.ExportEmployees(data);
+        return File(file,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            $"employees_{DateTime.UtcNow:yyyyMMdd_HHmmss}.xlsx");
     }
 }
