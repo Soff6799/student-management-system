@@ -9,6 +9,7 @@ using StudentAccounting.WebApi.Services.Auth;
 using StudentAccounting.WebApi.Services.Contract;
 using StudentAccounting.WebApi.Services.Education;
 using StudentAccounting.WebApi.Services.Employee;
+using StudentAccounting.WebApi.Services.Notifications;
 using StudentAccounting.WebApi.Services.Organization;
 using StudentAccounting.WebApi.Services.StudentTraining;
 using StudentAccounting.WebApi.Services.TrainingGroup;
@@ -122,7 +123,7 @@ builder.Services.AddScoped<IStudentTrainingService, StudentTrainingService>();
 builder.Services.AddScoped<ITrainingProgramService, TrainingProgramService>();
 builder.Services.AddScoped<ITrainingGroupService, TrainingGroupService>();
 builder.Services.AddScoped<IContractService, ContractService>();
-
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 var app = builder.Build();
 

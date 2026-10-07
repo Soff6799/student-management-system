@@ -70,9 +70,24 @@ public class StudentTrainingController : ControllerBase
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
+        try
+        {
+            var training = await _service.CreateAsync(dto);
+            return CreatedAtAction(nameof(GetById), new { id = training.Id }, training);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(ex.Message);
+        }
+    }
 
-        var training = await _service.CreateAsync(dto);
-        return CreatedAtAction(nameof(GetById), new { id = training.Id }, training);
+    /// <summary>
+    /// Предварительная проверка перед зачислением
+    /// </summary>
+    [HttpPost("check")]
+    public async Task<ActionResult<CheckEnrollmentResultDto>> CheckEnrollment([FromBody] StudentTrainingCreateDto dto)
+    {
+        return Ok(await _service.CheckEnrollmentAsync(dto));
     }
 
     /// <summary>

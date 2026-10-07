@@ -3,7 +3,7 @@ using static StudentAccounting.Domain.Enums;
 
 namespace StudentAccounting.WebApi.DTOs.TrainingProgram;
 
-public class TrainingProgramCreateDto
+public class TrainingProgramCreateDto: IValidatableObject
 {
     [Required]
     [MaxLength(255)]
