@@ -21,29 +21,31 @@ public class StudentTrainingService : IStudentTrainingService
 
     public async Task<IEnumerable<StudentTrainingDto>> GetAllAsync()
     {
-        var trainings = await _repository.GetAllAsync();
+        var trainings = await WithIncludes()
+            .ToListAsync();
         return trainings.Select(MapToDto);
     }
 
     public async Task<IEnumerable<StudentTrainingDto>> GetByEmployeeIdAsync(Guid employeeId)
     {
-        var trainings = await _repository.GetAllAsync();
-        return trainings
+        var trainings = await WithIncludes()
             .Where(t => t.EmployeeId == employeeId)
-            .Select(MapToDto);
+            .ToListAsync();
+        return trainings.Select(MapToDto);
     }
 
     public async Task<IEnumerable<StudentTrainingDto>> GetByTrainingGroupIdAsync(Guid trainingGroupId)
     {
-        var trainings = await _repository.GetAllAsync();
-        return trainings
-            .Where(t => t.TrainingGroupId == trainingGroupId)
-            .Select(MapToDto);
+        var trainings = await WithIncludes()
+        .Where(t => t.TrainingGroupId == trainingGroupId)
+        .ToListAsync();
+        return trainings.Select(MapToDto);
     }
 
     public async Task<StudentTrainingDto?> GetByIdAsync(Guid id)
     {
-        var training = await _repository.GetByIdAsync(id);
+        var training = await WithIncludes()
+        .FirstOrDefaultAsync(t => t.Id == id);
         return training == null ? null : MapToDto(training);
     }
 
@@ -168,7 +170,10 @@ public class StudentTrainingService : IStudentTrainingService
             CertificateNumber = training.CertificateNumber,
             Note = training.Note,
             CreatedAt = training.CreatedAt,
-            UpdatedAt = training.UpdatedAt
+            UpdatedAt = training.UpdatedAt,
+            TrainingProgramName = training.TrainingGroup?.TrainingProgram?.Name,
+            StartDate = training.TrainingGroup?.StartDate,
+            EndDate = training.TrainingGroup?.EndDate
         };
     }
 
@@ -247,4 +252,11 @@ public class StudentTrainingService : IStudentTrainingService
         RequirementsEducation.Higher => 3,
         _ => 0
     };
+
+    private IQueryable<DomainStudentTraining> WithIncludes()
+    {
+        return _context.StudentTrainings
+            .Include(t => t.Employee).ThenInclude(e => e.Organization)
+            .Include(t => t.TrainingGroup).ThenInclude(g => g.TrainingProgram);
+    }
 }
