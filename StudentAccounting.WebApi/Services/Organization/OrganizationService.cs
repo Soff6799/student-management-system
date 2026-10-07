@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudentAccounting.Dal.Contracts.interfaces;
 using StudentAccounting.Domain;
+using StudentAccounting.Infrastructure.Data;
+using StudentAccounting.WebApi.DTOs.Common;
 using StudentAccounting.WebApi.DTOs.Organization;
 using DomainOrganization = global::StudentAccounting.Domain.Organization;
 
@@ -10,10 +12,12 @@ namespace StudentAccounting.WebApi.Services.Organization;
 public class OrganizationService : IOrganizationService
 {
     private readonly IRepository<DomainOrganization> _repository;
+    private readonly AppDbContext _context;
 
-    public OrganizationService(IRepository<DomainOrganization> repository)
+    public OrganizationService(IRepository<DomainOrganization> repository, AppDbContext context)
     {
         _repository = repository;
+        _context = context;
     }
 
     public async Task<IEnumerable<OrganizationDto>> GetAllAsync()
@@ -108,6 +112,48 @@ public class OrganizationService : IOrganizationService
             Note = org.Note,
             CreatedAt = org.CreatedAt,
             UpdatedAt = org.UpdatedAt
+        };
+    }
+
+    public async Task<PagedResultDto<OrganizationDto>> GetPagedAsync(OrganizationListParams p)
+    {
+        var query = ApplySorting(ApplyFilters(_context.Organizations, p), p);
+        var totalCount = await query.CountAsync();
+        var items = await query.Skip((p.Page - 1) * p.PageSize).Take(p.PageSize).ToListAsync();
+
+        return new PagedResultDto<OrganizationDto>
+        {
+            Items = items.Select(MapToDto).ToList(),
+            TotalCount = totalCount,
+            Page = p.Page,
+            PageSize = p.PageSize
+        };
+    }
+
+    public async Task<List<OrganizationDto>> GetFilteredAsync(OrganizationListParams p)
+    {
+        var items = await ApplySorting(ApplyFilters(_context.Organizations, p), p).ToListAsync();
+        return items.Select(MapToDto).ToList();
+    }
+
+    private static IQueryable<DomainOrganization> ApplyFilters(IQueryable<DomainOrganization> query, OrganizationListParams p)
+    {
+        if (!string.IsNullOrWhiteSpace(p.Search))
+        {
+            var s = p.Search.Trim();
+            query = query.Where(o => o.FullName.Contains(s) || o.ShortName.Contains(s) || o.INN.Contains(s));
+        }
+        return query;
+    }
+
+    private static IQueryable<DomainOrganization> ApplySorting(IQueryable<DomainOrganization> query, OrganizationListParams p)
+    {
+        return p.SortBy.ToLower() switch
+        {
+            "fullname" => p.Descending ? query.OrderByDescending(o => o.FullName) : query.OrderBy(o => o.FullName),
+            "shortname" => p.Descending ? query.OrderByDescending(o => o.ShortName) : query.OrderBy(o => o.ShortName),
+            "inn" => p.Descending ? query.OrderByDescending(o => o.INN) : query.OrderBy(o => o.INN),
+            _ => p.Descending ? query.OrderByDescending(o => o.CreatedAt) : query.OrderBy(o => o.CreatedAt)
         };
     }
 }
