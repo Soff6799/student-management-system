@@ -21,7 +21,7 @@ public class ContractController : ControllerBase
     }
 
     /// <summary>
-    /// Получить все договоры
+    /// Реестр договоров
     /// </summary>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ContractDto>>> GetAll()
@@ -49,7 +49,7 @@ public class ContractController : ControllerBase
     }
 
     /// <summary>
-    /// Создать договор (номер генерируется автоматически)
+    /// Сформировать договор: номер, дата и файлы (.docx/.pdf) создаются автоматически
     /// </summary>
     [HttpPost]
     public async Task<ActionResult<ContractDto>> Create([FromBody] ContractCreateDto dto)
@@ -66,24 +66,54 @@ public class ContractController : ControllerBase
         {
             return NotFound();
         }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     /// <summary>
-    /// Обновить договор
+    /// Пересоздать файлы договора из актуальных данных группы
     /// </summary>
-    [HttpPut]
-    public async Task<ActionResult<ContractDto>> Update([FromBody] ContractUpdateDto dto)
+    [HttpPost("{id:guid}/regenerate")]
+    public async Task<ActionResult<ContractDto>> Regenerate(Guid id)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         try
         {
-            return Ok(await _service.UpdateAsync(dto));
+            return Ok(await _service.RegenerateAsync(id));
         }
         catch (KeyNotFoundException)
         {
             return NotFound();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Скачать договор в формате docx или pdf
+    /// </summary>
+    [HttpGet("{id:guid}/download")]
+    public async Task<IActionResult> Download(Guid id, [FromQuery] string format = "pdf")
+    {
+        try
+        {
+            var (content, contentType, fileName) = await _service.GetDocumentAsync(id, format);
+            return File(content, contentType, fileName);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (FileNotFoundException ex)
+        {
+            return NotFound(ex.Message);
         }
     }
 

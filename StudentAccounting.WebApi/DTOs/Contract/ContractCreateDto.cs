@@ -2,16 +2,11 @@
 
 namespace StudentAccounting.WebApi.DTOs.Contract;
 
+/// <summary>
+/// Запрос на формирование договора: номер, дата и файлы создаются сервером
+/// </summary>
 public class ContractCreateDto
 {
     [Required]
     public Guid TrainingGroupId { get; set; }
-
-    /// <summary>
-    /// Путь к файлу договора генерация .docx/.pdf: 
-    /// отдельная будущая задача
-    /// </summary>
-    [Required]
-    [MaxLength(500)]
-    public string FilePath { get; set; } = string.Empty;
 }

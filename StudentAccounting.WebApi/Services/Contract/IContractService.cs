@@ -8,6 +8,7 @@ public interface IContractService
     Task<ContractDto?> GetByIdAsync(Guid id);
     Task<IEnumerable<ContractDto>> GetByTrainingGroupIdAsync(Guid trainingGroupId);
     Task<ContractDto> CreateAsync(ContractCreateDto dto);
-    Task<ContractDto> UpdateAsync(ContractUpdateDto dto);
+    Task<ContractDto> RegenerateAsync(Guid id);
+    Task<(byte[] Content, string ContentType, string FileName)> GetDocumentAsync(Guid id, string format);
     Task DeleteAsync(Guid id);
 }
