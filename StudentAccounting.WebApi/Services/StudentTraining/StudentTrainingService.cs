@@ -49,6 +49,10 @@ public class StudentTrainingService : IStudentTrainingService
 
     public async Task<StudentTrainingDto> CreateAsync(StudentTrainingCreateDto dto)
     {
+        var check = await CheckEnrollmentAsync(dto);
+        if (!check.CanEnroll)
+            throw new InvalidOperationException(string.Join("; ", check.Errors));
+
         var training = new DomainStudentTraining
         {
             EmployeeId = dto.EmployeeId,
@@ -167,4 +171,80 @@ public class StudentTrainingService : IStudentTrainingService
             UpdatedAt = training.UpdatedAt
         };
     }
+
+    /// <summary>
+    /// Предварительная проверка перед зачислением:
+    /// дубликат — запрет; уволенный сотрудник и несоответствие образования — предупреждения
+    /// </summary>
+    public async Task<CheckEnrollmentResultDto> CheckEnrollmentAsync(StudentTrainingCreateDto dto)
+    {
+        var result = new CheckEnrollmentResultDto { CanEnroll = true };
+
+        var employee = await _context.Employees
+            .Include(e => e.Educations)
+            .FirstOrDefaultAsync(e => e.Id == dto.EmployeeId);
+        if (employee == null)
+        {
+            result.CanEnroll = false;
+            result.Errors.Add("Сотрудник не найден");
+            return result;
+        }
+
+        var group = await _context.TrainingGroups
+            .Include(g => g.TrainingProgram)
+            .FirstOrDefaultAsync(g => g.Id == dto.TrainingGroupId);
+        if (group == null)
+        {
+            result.CanEnroll = false;
+            result.Errors.Add("Группа обучения не найдена");
+            return result;
+        }
+
+        // запрет дублирования зачисления в ту же группу
+        var duplicate = await _context.StudentTrainings
+            .AnyAsync(t => t.EmployeeId == dto.EmployeeId
+                        && t.TrainingGroupId == dto.TrainingGroupId
+                        && t.Status != TrainingStatus.DroppedOut);
+        if (duplicate)
+        {
+            result.CanEnroll = false;
+            result.Errors.Add("Сотрудник уже зачислен в эту группу");
+        }
+
+        // предупреждение об уволенном сотруднике
+        if (employee.Status == EmployeeStatus.Dismissed)
+            result.Warnings.Add("Сотрудник уволен — проверьте целесообразность зачисления");
+
+        // предупреждение о несоответствии образования
+        var required = group.TrainingProgram?.RequirementsEducation;
+        if (required is RequirementsEducation req
+            && req != RequirementsEducation.NotRequired
+            && req != RequirementsEducation.Other)
+        {
+            var requiredRank = GetRank(req);
+            var confirmed = employee.Educations.Any(e => GetRank(e.Level) >= requiredRank);
+            if (!confirmed)
+                result.Warnings.Add($"Программа требует образование «{req}», у сотрудника нет подтверждающей записи в разделе «Образование»");
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Ранг уровня образования для сравнения с требованиями
+    /// </summary>
+    private static int GetRank(EducationLevel level) => level switch
+    {
+        EducationLevel.SecondaryGeneral => 1,
+        EducationLevel.SecondaryVocational => 2,
+        EducationLevel.Higher => 3,
+        _ => 0
+    };
+
+    private static int GetRank(RequirementsEducation req) => req switch
+    {
+        RequirementsEducation.SecondaryGeneral => 1,
+        RequirementsEducation.SecondaryVocational => 2,
+        RequirementsEducation.Higher => 3,
+        _ => 0
+    };
 }

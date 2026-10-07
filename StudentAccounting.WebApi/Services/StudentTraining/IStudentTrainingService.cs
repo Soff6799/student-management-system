@@ -11,4 +11,6 @@ public interface IStudentTrainingService
     Task<StudentTrainingDto> CreateAsync(StudentTrainingCreateDto dto);
     Task<StudentTrainingDto> UpdateAsync(StudentTrainingUpdateDto dto);
     Task DeleteAsync(Guid id);
+
+    Task<CheckEnrollmentResultDto> CheckEnrollmentAsync(StudentTrainingCreateDto dto);
 }
