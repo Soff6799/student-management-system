@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StudentAccounting.Context.Repositories;
@@ -17,6 +18,7 @@ using StudentAccounting.WebApi.Services.TrainingProgram;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -124,6 +126,17 @@ builder.Services.AddScoped<ITrainingProgramService, TrainingProgramService>();
 builder.Services.AddScoped<ITrainingGroupService, TrainingGroupService>();
 builder.Services.AddScoped<IContractService, ContractService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+
+//генерация и хранение договоров
+builder.Services.AddSingleton(new StorageOptions
+{
+    ContractsRoot = Path.Combine(
+        builder.Environment.ContentRootPath,
+        builder.Configuration["StorageSettings:ContractsRoot"] ?? "storage/contracts")
+});
+builder.Services.AddSingleton(
+    builder.Configuration.GetSection(ExecutorOptions.SectionName).Get<ExecutorOptions>() ?? new ExecutorOptions());
+builder.Services.AddScoped<IContractDocumentGenerator, ContractDocumentGenerator>();
 
 var app = builder.Build();
 
