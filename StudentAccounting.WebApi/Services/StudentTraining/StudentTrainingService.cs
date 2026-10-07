@@ -149,7 +149,7 @@ public class StudentTrainingService : IStudentTrainingService
             RetrainingPeriodicity.ThreeYears => 36,
             RetrainingPeriodicity.FiveYears => 60,
             RetrainingPeriodicity.CustomInMonths => customMonths,
-            _ => null // NotRequired или не задано
+            _ => (int)periodicity.Value > 0 ? (int)periodicity.Value : null
         };
     }
 
