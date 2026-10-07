@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StudentAccounting.WebApi.DTOs.Common;
 using StudentAccounting.WebApi.DTOs.TrainingProgram;
 using StudentAccounting.WebApi.Services.TrainingProgram;
 
@@ -21,12 +22,12 @@ public class TrainingProgramController : ControllerBase
     }
 
     /// <summary>
-    /// Получить все программы обучения
+    /// Получить программы обучения с пагинацией
     /// </summary>
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<TrainingProgramDto>>> GetAll()
+    [HttpGet("paged")]
+    public async Task<ActionResult<PagedResultDto<TrainingProgramDto>>> GetPaged([FromQuery] TrainingProgramListParams p)
     {
-        return Ok(await _service.GetAllAsync());
+        return Ok(await _service.GetPagedAsync(p));
     }
 
     /// <summary>
