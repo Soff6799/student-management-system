@@ -10,6 +10,7 @@ using StudentAccounting.WebApi.Services.Auth;
 using StudentAccounting.WebApi.Services.Contract;
 using StudentAccounting.WebApi.Services.Education;
 using StudentAccounting.WebApi.Services.Employee;
+using StudentAccounting.WebApi.Services.Excel;
 using StudentAccounting.WebApi.Services.Notifications;
 using StudentAccounting.WebApi.Services.Organization;
 using StudentAccounting.WebApi.Services.StudentTraining;
@@ -126,6 +127,7 @@ builder.Services.AddScoped<ITrainingProgramService, TrainingProgramService>();
 builder.Services.AddScoped<ITrainingGroupService, TrainingGroupService>();
 builder.Services.AddScoped<IContractService, ContractService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IExcelExportService, ExcelExportService>();
 
 //генерация и хранение договоров
 builder.Services.AddSingleton(new StorageOptions

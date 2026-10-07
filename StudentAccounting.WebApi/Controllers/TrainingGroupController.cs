@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StudentAccounting.WebApi.DTOs.Common;
 using StudentAccounting.WebApi.DTOs.TrainingGroup;
+using StudentAccounting.WebApi.Services.Excel;
 using StudentAccounting.WebApi.Services.TrainingGroup;
 
 namespace StudentAccounting.WebApi.Controllers;
@@ -14,19 +16,34 @@ namespace StudentAccounting.WebApi.Controllers;
 public class TrainingGroupController : ControllerBase
 {
     private readonly ITrainingGroupService _service;
+    private readonly IExcelExportService _excel;
 
-    public TrainingGroupController(ITrainingGroupService service)
+    public TrainingGroupController(ITrainingGroupService service, IExcelExportService excel)
     {
         _service = service;
+        _excel = excel;
     }
 
     /// <summary>
-    /// Получить все группы
+    /// Получить группы с поиском, фильтрами, сортировкой и пагинацией
     /// </summary>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TrainingGroupDto>>> GetAll()
+    public async Task<ActionResult<PagedResultDto<TrainingGroupDto>>> GetAll([FromQuery] TrainingGroupListParams p)
     {
-        return Ok(await _service.GetAllAsync());
+        return Ok(await _service.GetPagedAsync(p));
+    }
+
+    /// <summary>
+    /// Выгрузка групп в XLSX с учётом фильтров и поиска
+    /// </summary>
+    [HttpGet("export")]
+    public async Task<IActionResult> Export([FromQuery] TrainingGroupListParams p)
+    {
+        var data = await _service.GetFilteredAsync(p);
+        var file = _excel.ExportTrainingGroups(data);
+        return File(file,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            $"training_groups_{DateTime.UtcNow:yyyyMMdd_HHmmss}.xlsx");
     }
 
     /// <summary>
