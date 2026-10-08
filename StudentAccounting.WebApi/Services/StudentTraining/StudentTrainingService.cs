@@ -4,6 +4,7 @@ using StudentAccounting.Domain;
 using StudentAccounting.Infrastructure.Data;
 using StudentAccounting.WebApi.DTOs.Common;
 using StudentAccounting.WebApi.DTOs.StudentTraining;
+using StudentAccounting.WebApi.Services.Common;
 using static StudentAccounting.Domain.Enums;
 using DomainStudentTraining = global::StudentAccounting.Domain.StudentTraining;
 
@@ -16,11 +17,15 @@ public class StudentTrainingService : IStudentTrainingService
 {
     private readonly IRepository<DomainStudentTraining> _repository;
     private readonly AppDbContext _context;
+    private readonly AuditService _auditService;
 
-    public StudentTrainingService(IRepository<DomainStudentTraining> repository, AppDbContext context)
+    public StudentTrainingService(IRepository<DomainStudentTraining> repository, 
+        AppDbContext context,
+    AuditService auditService)
     {
         _repository = repository;
         _context = context;
+        _auditService = auditService;
     }
 
     public async Task<IEnumerable<StudentTrainingDto>> GetAllAsync()
@@ -95,7 +100,7 @@ public class StudentTrainingService : IStudentTrainingService
             return result;
         }
 
-        // ТЗ 4.d.iv.3: запрет дублирования зачисления в ту же группу
+        // запрет дублирования зачисления в ту же группу
         var duplicate = await _context.StudentTrainings
             .AnyAsync(t => t.EmployeeId == dto.EmployeeId
                         && t.TrainingGroupId == dto.TrainingGroupId
@@ -106,11 +111,11 @@ public class StudentTrainingService : IStudentTrainingService
             result.Errors.Add("Сотрудник уже зачислен в эту группу");
         }
 
-        // ТЗ 4.d.iv.1: предупреждение об уволенном сотруднике
+        // предупреждение об уволенном сотруднике
         if (employee.Status == EmployeeStatus.Dismissed)
             result.Warnings.Add("Сотрудник уволен — проверьте целесообразность зачисления");
 
-        // ТЗ 4.d.iv.2 / 4.b.v: предупреждение о несоответствии образования
+        // предупреждение о несоответствии образования
         var required = group.TrainingProgram?.RequirementsEducation;
         if (required is RequirementsEducation req
             && req != RequirementsEducation.NotRequired
@@ -146,7 +151,7 @@ public class StudentTrainingService : IStudentTrainingService
         {
             training.NextTrainingDate = await CalculateNextTrainingDate(dto.TrainingGroupId, dto.CompletionDate.Value);
         }
-
+        _auditService.SetAuditFields(training);
         await _repository.AddAsync(training);
         await _repository.SaveChangesAsync();
         return (await GetByIdAsync(training.Id))!;
@@ -167,7 +172,7 @@ public class StudentTrainingService : IStudentTrainingService
         training.Note = dto.Note;
         training.CompletionDate = dto.CompletionDate;
 
-        // ТЗ 4.e.ii: авто-расчёт даты следующего обучения при статусе «Прошёл обучение»
+        // авто-расчёт даты следующего обучения при статусе «Прошёл обучение»
         if (dto.Status == TrainingStatus.Completed)
         {
             training.CompletionDate ??= DateOnly.FromDateTime(DateTime.UtcNow);
@@ -181,7 +186,7 @@ public class StudentTrainingService : IStudentTrainingService
         {
             training.NextTrainingDate = null;
         }
-
+        _auditService.SetAuditFields(training, isUpdate: true);
         training.UpdatedAt = DateTimeOffset.UtcNow;
         await _context.SaveChangesAsync();
         return (await GetByIdAsync(training.Id))!;
