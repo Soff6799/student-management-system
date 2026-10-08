@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StudentAccounting.Context.Repositories;
 using StudentAccounting.Dal.Contracts.interfaces;
-using StudentAccounting.Domain;
 using StudentAccounting.Infrastructure.Data;
 using StudentAccounting.WebApi.Infrastructure.Data;
 using StudentAccounting.WebApi.Services.Auth;
@@ -89,7 +87,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 //builder.Services.AddEndpointsApiExplorer();
 
