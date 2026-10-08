@@ -117,6 +117,15 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdministratorOnly", policy =>
+        policy.RequireRole("Administrator"));
+
+    options.AddPolicy("MethodologistOnly", policy =>
+        policy.RequireRole("Methodologist"));
+});
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IOrganizationService, OrganizationService>();
