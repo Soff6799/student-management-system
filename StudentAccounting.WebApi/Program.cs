@@ -6,6 +6,7 @@ using StudentAccounting.Context.Repositories;
 using StudentAccounting.Dal.Contracts.interfaces;
 using StudentAccounting.Domain;
 using StudentAccounting.Infrastructure.Data;
+using StudentAccounting.WebApi.Infrastructure.Data;
 using StudentAccounting.WebApi.Services.Auth;
 using StudentAccounting.WebApi.Services.Common;
 using StudentAccounting.WebApi.Services.Contract;
@@ -155,6 +156,12 @@ builder.Services.AddSingleton(
 builder.Services.AddScoped<IContractDocumentGenerator, ContractDocumentGenerator>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await DbSeeder.SeedAsync(context);
+}
 
 if (app.Environment.IsDevelopment())
 {
