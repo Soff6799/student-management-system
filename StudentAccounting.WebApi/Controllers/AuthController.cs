@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StudentAccounting.WebApi.DTOs.Auth;
 using StudentAccounting.WebApi.Services.Auth;
 
@@ -16,6 +17,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto dto)
     {
         var result = await _authService.LoginAsync(dto);
@@ -26,6 +28,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
+    [Authorize(Policy = "AdministratorOnly")]
     public async Task<IActionResult> Register([FromBody] RegisterRequestDto dto)
     {
         try

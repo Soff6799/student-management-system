@@ -28,6 +28,7 @@ public class OrganizationController : ControllerBase
     /// Получить все организации
     /// </summary>
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<PagedResultDto<OrganizationDto>>> GetAll([FromQuery] OrganizationListParams p)
     {
         return Ok(await _service.GetPagedAsync(p));
@@ -37,6 +38,7 @@ public class OrganizationController : ControllerBase
     /// Получить организацию по Id
     /// </summary>
     [HttpGet("{id:guid}")]
+    [Authorize]
     public async Task<ActionResult<OrganizationDto>> GetById(Guid id)
     {
         var organization = await _service.GetByIdAsync(id);
@@ -50,6 +52,7 @@ public class OrganizationController : ControllerBase
     /// Создать новую организацию
     /// </summary>
     [HttpPost]
+    [Authorize(Policy = "AdministratorOnly")]
     public async Task<ActionResult<OrganizationDto>> Create([FromBody] OrganizationCreateDto dto)
     {
         if (!ModelState.IsValid)
@@ -63,6 +66,7 @@ public class OrganizationController : ControllerBase
     /// Обновить организацию
     /// </summary>
     [HttpPut]
+    [Authorize(Policy = "AdministatorOnly")]
     public async Task<ActionResult<OrganizationDto>> Update([FromBody] OrganizationUpdateDto dto)
     {
         if (!ModelState.IsValid)
@@ -83,6 +87,7 @@ public class OrganizationController : ControllerBase
     /// Удалить организацию (мягкое удаление)
     /// </summary>
     [HttpDelete("{id:guid}")]
+    [Authorize(Policy = "AdministatorOnly")]
     public async Task<IActionResult> Delete(Guid id)
     {
         try
@@ -100,6 +105,7 @@ public class OrganizationController : ControllerBase
     /// Выгрузка организаций в XLSX с учётом фильтров и поиска 
     /// </summary>
     [HttpGet("export")]
+    [Authorize]
     public async Task<IActionResult> Export([FromQuery] OrganizationListParams p)
     {
         var data = await _service.GetFilteredAsync(p);

@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using StudentAccounting.Domain;
 using StudentAccounting.Infrastructure.Data;
 using StudentAccounting.WebApi.DTOs.Common;
 using StudentAccounting.WebApi.DTOs.TrainingProgram;
+using StudentAccounting.WebApi.Services.Common;
 using static StudentAccounting.Domain.Enums;
 using DomainTrainingProgram = global::StudentAccounting.Domain.TrainingProgram;
 
@@ -10,10 +12,13 @@ namespace StudentAccounting.WebApi.Services.TrainingProgram;
 public class TrainingProgramService : ITrainingProgramService
 {
     private readonly AppDbContext _context;
+    private readonly AuditService _auditService;
 
-    public TrainingProgramService(AppDbContext context)
+    public TrainingProgramService(AppDbContext context,
+        AuditService auditService)
     {
         _context = context;
+        _auditService = auditService;
     }
 
     public async Task<IEnumerable<TrainingProgramDto>> GetAllAsync()
@@ -47,7 +52,7 @@ public class TrainingProgramService : ITrainingProgramService
             NotificationLeadTimeDays = dto.NotificationLeadTimeDays,
             Status = ProgramStatus.Active
         };
-
+        _auditService.SetAuditFields(program);
         await _context.TrainingPrograms.AddAsync(program);
         await _context.SaveChangesAsync();
         return (await GetByIdAsync(program.Id))!;
@@ -70,7 +75,7 @@ public class TrainingProgramService : ITrainingProgramService
         program.Status = dto.Status;
         program.NotificationLeadTimeDays = dto.NotificationLeadTimeDays;
         program.UpdatedAt = DateTimeOffset.UtcNow;
-
+        _auditService.SetAuditFields(program, isUpdate: true);
         await _context.SaveChangesAsync();
         return (await GetByIdAsync(program.Id))!;
     }

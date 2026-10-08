@@ -5,6 +5,7 @@ using StudentAccounting.Domain;
 using StudentAccounting.Infrastructure.Data;
 using StudentAccounting.WebApi.DTOs.Common;
 using StudentAccounting.WebApi.DTOs.Employee;
+using StudentAccounting.WebApi.Services.Common;
 using static StudentAccounting.Domain.Enums;
 using DomainEmployee = global::StudentAccounting.Domain.Employee;
 
@@ -14,11 +15,15 @@ public class EmployeeService : IEmployeeService
 {
     private readonly IRepository<DomainEmployee> _repository;
     private readonly AppDbContext _context;
+    private readonly AuditService _auditService;
 
-    public EmployeeService(IRepository<DomainEmployee> repository, AppDbContext context)
+    public EmployeeService(IRepository<DomainEmployee> repository, 
+        AppDbContext context,
+        AuditService auditService)
     {
         _repository = repository;
         _context = context;
+        _auditService = auditService;
     }
 
     public async Task<IEnumerable<EmployeeDto>> GetAllAsync()
@@ -45,6 +50,7 @@ public class EmployeeService : IEmployeeService
             Post = dto.Post,
             OrganizationId = dto.OrganizationId
         };
+        _auditService.SetAuditFields(employee);
 
         await _repository.AddAsync(employee);
         await _repository.SaveChangesAsync();
@@ -65,7 +71,7 @@ public class EmployeeService : IEmployeeService
         employee.Post = dto.Post;
         employee.OrganizationId = dto.OrganizationId;
         employee.UpdatedAt = DateTimeOffset.UtcNow;
-
+        _auditService.SetAuditFields(employee, isUpdate: true);
         await _repository.UpdateAsync(employee);
         await _repository.SaveChangesAsync();
         return MapToDto(employee);

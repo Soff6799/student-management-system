@@ -50,6 +50,7 @@ public class EmployeeController : ControllerBase
     /// Создать нового сотрудника
     /// </summary>
     [HttpPost]
+    [Authorize(Policy = "AdministratorOnly")]
     public async Task<ActionResult<EmployeeDto>> Create([FromBody] EmployeeCreateDto dto)
     {
         if (!ModelState.IsValid)
@@ -63,6 +64,7 @@ public class EmployeeController : ControllerBase
     /// Обновить сотрудника
     /// </summary>
     [HttpPut]
+    [Authorize(Policy = "AdministratorOnly")]
     public async Task<ActionResult<EmployeeDto>> Update([FromBody] EmployeeUpdateDto dto)
     {
         if (!ModelState.IsValid)
@@ -83,6 +85,7 @@ public class EmployeeController : ControllerBase
     /// Удалить сотрудника (мягкое удаление)
     /// </summary>
     [HttpDelete("{id:guid}")]
+    [Authorize(Policy = "AdministratorOnly")]
     public async Task<IActionResult> Delete(Guid id)
     {
         try

@@ -1,4 +1,4 @@
-namespace tudentAccounting.WebApi
+namespace StudentAccounting.WebApi
 {
     public class WeatherForecast
     {

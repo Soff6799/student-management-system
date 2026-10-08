@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StudentAccounting.Context.Repositories;
 using StudentAccounting.Dal.Contracts.interfaces;
-using StudentAccounting.Domain;
 using StudentAccounting.Infrastructure.Data;
+using StudentAccounting.WebApi.Infrastructure.Data;
 using StudentAccounting.WebApi.Services.Auth;
+using StudentAccounting.WebApi.Services.Common;
 using StudentAccounting.WebApi.Services.Contract;
 using StudentAccounting.WebApi.Services.Education;
 using StudentAccounting.WebApi.Services.Employee;
@@ -87,7 +87,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 //builder.Services.AddEndpointsApiExplorer();
 
@@ -117,6 +116,15 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdministratorOnly", policy =>
+        policy.RequireRole("Administrator"));
+
+    options.AddPolicy("MethodologistOnly", policy =>
+        policy.RequireRole("Methodologist"));
+});
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IOrganizationService, OrganizationService>();
@@ -128,6 +136,10 @@ builder.Services.AddScoped<ITrainingGroupService, TrainingGroupService>();
 builder.Services.AddScoped<IContractService, ContractService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IExcelExportService, ExcelExportService>();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<AuditService>();
 
 //генерация и хранение договоров
 builder.Services.AddSingleton(new StorageOptions
@@ -141,6 +153,12 @@ builder.Services.AddSingleton(
 builder.Services.AddScoped<IContractDocumentGenerator, ContractDocumentGenerator>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await DbSeeder.SeedAsync(context);
+}
 
 if (app.Environment.IsDevelopment())
 {

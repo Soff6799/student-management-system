@@ -28,6 +28,7 @@ public class StudentTrainingController : ControllerBase
     /// Получить все записи об обучении
     /// </summary>
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<StudentTrainingDto>>> GetAll()
     {
         return Ok(await _service.GetAllAsync());
@@ -56,6 +57,7 @@ public class StudentTrainingController : ControllerBase
     /// Выгрузка обучающихся группы в XLSX с учётом фильтров и поиска
     /// </summary>
     [HttpGet("group/{trainingGroupId:guid}/export")]
+    [Authorize]
     public async Task<IActionResult> ExportGroupStudents(Guid trainingGroupId, [FromQuery] GroupStudentListParams p)
     {
         var data = await _service.GetGroupStudentsFilteredAsync(trainingGroupId, p);

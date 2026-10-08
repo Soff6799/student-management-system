@@ -6,6 +6,7 @@ using StudentAccounting.WebApi.DTOs.Auth;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using static StudentAccounting.Domain.Enums;
 
 namespace StudentAccounting.WebApi.Services.Auth;
 
@@ -102,5 +103,86 @@ public class AuthService : IAuthService
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
+    {
+        return await _context.Users
+            .Where(u => u.DeletedAt == null)
+            .Select(u => new UserDto
+            {
+                Id = u.Id,
+                Login = u.Login,
+                FullName = $"{u.LastName} {u.FirstName} {u.MiddleName}".Trim(),
+                Role = u.Role.ToString(),
+                IsActive = u.IsActive,
+                LastLoginDate = u.LastLoginDate,
+                CreatedAt = u.CreatedAt
+            })
+            .ToListAsync();
+    }
+
+    public async Task<UserDto?> GetUserByIdAsync(Guid id)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null);
+        if (user == null) return null;
+
+        return new UserDto
+        {
+            Id = user.Id,
+            Login = user.Login,
+            FullName = $"{user.LastName} {user.FirstName} {user.MiddleName}".Trim(),
+            Role = user.Role.ToString(),
+            IsActive = user.IsActive,
+            LastLoginDate = user.LastLoginDate,
+            CreatedAt = user.CreatedAt
+        };
+    }
+
+    public async Task<UserDto> UpdateUserAsync(Guid id, UserUpdateDto dto)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null);
+        if (user == null) throw new KeyNotFoundException("Пользователь не найден");
+
+        if (dto.FirstName != null) user.FirstName = dto.FirstName;
+        if (dto.LastName != null) user.LastName = dto.LastName;
+        if (dto.MiddleName != null) user.MiddleName = dto.MiddleName;
+        if (dto.Role != null && Enum.TryParse<UserRole>(dto.Role, out var role)) user.Role = role;
+        if (dto.IsActive.HasValue) user.IsActive = dto.IsActive.Value;
+        if (!string.IsNullOrWhiteSpace(dto.NewPassword))
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+
+        user.UpdatedAt = DateTimeOffset.UtcNow;
+        await _context.SaveChangesAsync();
+
+        return new UserDto
+        {
+            Id = user.Id,
+            Login = user.Login,
+            FullName = $"{user.LastName} {user.FirstName} {user.MiddleName}".Trim(),
+            Role = user.Role.ToString(),
+            IsActive = user.IsActive,
+            LastLoginDate = user.LastLoginDate,
+            CreatedAt = user.CreatedAt
+        };
+    }
+
+    public async Task ToggleUserActiveAsync(Guid id)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null);
+        if (user == null) throw new KeyNotFoundException("Пользователь не найден");
+
+        user.IsActive = !user.IsActive;
+        user.UpdatedAt = DateTimeOffset.UtcNow;
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteUserAsync(Guid id)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null);
+        if (user == null) throw new KeyNotFoundException("Пользователь не найден");
+
+        user.DeletedAt = DateTimeOffset.UtcNow;
+        await _context.SaveChangesAsync();
     }
 }
