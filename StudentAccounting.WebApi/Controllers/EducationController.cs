@@ -56,6 +56,7 @@ public class EducationController : ControllerBase
     /// Создать новую запись об образовании
     /// </summary>
     [HttpPost]
+    [Authorize(Policy = "AdministratorOnly")]
     public async Task<ActionResult<EducationDto>> Create([FromBody] EducationCreateDto dto)
     {
         if (!ModelState.IsValid)
@@ -69,6 +70,7 @@ public class EducationController : ControllerBase
     /// Обновить запись об образовании
     /// </summary>
     [HttpPut]
+    [Authorize(Policy = "AdministratorOnly")]
     public async Task<ActionResult<EducationDto>> Update([FromBody] EducationUpdateDto dto)
     {
         if (!ModelState.IsValid)
@@ -89,6 +91,7 @@ public class EducationController : ControllerBase
     /// Удалить запись об образовании (мягкое удаление)
     /// </summary>
     [HttpDelete("{id:guid}")]
+    [Authorize(Policy = "AdministratorOnly")]
     public async Task<IActionResult> Delete(Guid id)
     {
         try
