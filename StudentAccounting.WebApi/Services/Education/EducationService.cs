@@ -2,6 +2,7 @@
 using StudentAccounting.Dal.Contracts.interfaces;
 using StudentAccounting.Domain;
 using StudentAccounting.WebApi.DTOs.Education;
+using StudentAccounting.WebApi.Services.Common;
 using DomainEducation = global::StudentAccounting.Domain.Education;
 
 namespace StudentAccounting.WebApi.Services.Education;
@@ -9,10 +10,13 @@ namespace StudentAccounting.WebApi.Services.Education;
 public class EducationService : IEducationService
 {
     private readonly IRepository<DomainEducation> _repository;
+    private readonly AuditService _auditService;
 
-    public EducationService(IRepository<DomainEducation> repository)
+    public EducationService(IRepository<DomainEducation> repository,
+        AuditService auditService)
     {
         _repository = repository;
+        _auditService = auditService;
     }
 
     public async Task<IEnumerable<EducationDto>> GetAllAsync()
@@ -46,7 +50,7 @@ public class EducationService : IEducationService
             FilePath = dto.FilePath,
             EmployeeId = dto.EmployeeId
         };
-
+        _auditService.SetAuditFields(education);
         await _repository.AddAsync(education);
         await _repository.SaveChangesAsync();
         return MapToDto(education);
@@ -65,7 +69,7 @@ public class EducationService : IEducationService
         education.FilePath = dto.FilePath;
         education.EmployeeId = dto.EmployeeId;
         education.UpdatedAt = DateTimeOffset.UtcNow;
-
+        _auditService.SetAuditFields(education);
         await _repository.UpdateAsync(education);
         await _repository.SaveChangesAsync();
         return MapToDto(education);
