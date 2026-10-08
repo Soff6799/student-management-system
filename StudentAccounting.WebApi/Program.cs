@@ -129,6 +129,9 @@ builder.Services.AddScoped<IContractService, ContractService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IExcelExportService, ExcelExportService>();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+
 //генерация и хранение договоров
 builder.Services.AddSingleton(new StorageOptions
 {
