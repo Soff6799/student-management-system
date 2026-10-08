@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using StudentAccounting.Domain;
 using StudentAccounting.Infrastructure.Data;
 using StudentAccounting.WebApi.DTOs.Common;
 using StudentAccounting.WebApi.DTOs.TrainingGroup;
+using StudentAccounting.WebApi.Services.Common;
 using static StudentAccounting.Domain.Enums;
 using DomainTrainingGroup = global::StudentAccounting.Domain.TrainingGroup;
 
@@ -10,10 +12,12 @@ namespace StudentAccounting.WebApi.Services.TrainingGroup;
 public class TrainingGroupService : ITrainingGroupService
 {
     private readonly AppDbContext _context;
+    private readonly AuditService _auditService;
 
-    public TrainingGroupService(AppDbContext context)
+    public TrainingGroupService(AppDbContext context, AuditService auditService)
     {
         _context = context;
+        _auditService = auditService;
     }
 
     public async Task<PagedResultDto<TrainingGroupDto>> GetPagedAsync(TrainingGroupListParams p)
@@ -77,7 +81,7 @@ public class TrainingGroupService : ITrainingGroupService
             Status = dto.Status,
             Note = dto.Note
         };
-
+        _auditService.SetAuditFields(group);
         await _context.TrainingGroups.AddAsync(group);
         await _context.SaveChangesAsync();
         return (await GetByIdAsync(group.Id))!;
@@ -105,7 +109,7 @@ public class TrainingGroupService : ITrainingGroupService
         group.Status = dto.Status;
         group.Note = dto.Note;
         group.UpdatedAt = DateTimeOffset.UtcNow;
-
+        _auditService.SetAuditFields(group, isUpdate: true);
         await _context.SaveChangesAsync();
         return (await GetByIdAsync(group.Id))!;
     }
