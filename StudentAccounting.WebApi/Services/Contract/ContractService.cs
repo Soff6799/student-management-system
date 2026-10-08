@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using StudentAccounting.Domain;
 using StudentAccounting.Infrastructure.Data;
 using StudentAccounting.WebApi.DTOs.Contract;
+using StudentAccounting.WebApi.Services.Common;
 using static StudentAccounting.Domain.Enums;
 using DomainContract = global::StudentAccounting.Domain.Contract;
 using DomainTrainingGroup = global::StudentAccounting.Domain.TrainingGroup;
@@ -12,12 +14,16 @@ public class ContractService : IContractService
     private readonly AppDbContext _context;
     private readonly IContractDocumentGenerator _generator;
     private readonly StorageOptions _storage;
+    private readonly AuditService _auditService;
 
-    public ContractService(AppDbContext context, IContractDocumentGenerator generator, StorageOptions storage)
+    public ContractService(AppDbContext context, 
+        IContractDocumentGenerator generator, StorageOptions storage,
+        AuditService auditService)
     {
         _context = context;
         _generator = generator;
         _storage = storage;
+        _auditService = auditService;
     }
 
     public async Task<IEnumerable<ContractDto>> GetAllAsync()
@@ -53,7 +59,7 @@ public class ContractService : IContractService
             FilePath = number,
             TrainingGroupId = group.Id
         };
-
+        _auditService.SetAuditFields(contract);
         await SaveDocumentsAsync(data, contract.FilePath);
 
         await _context.Contracts.AddAsync(contract);
@@ -110,8 +116,6 @@ public class ContractService : IContractService
         await _context.SaveChangesAsync();
     }
 
-    // ---------- приватные методы ----------
-
     private IQueryable<DomainContract> WithIncludes()
     {
         return _context.Contracts
@@ -131,7 +135,7 @@ public class ContractService : IContractService
     }
 
     /// <summary>
-    /// Сборка данных договора по ТЗ 4.g.iii.
+    /// Сборка данных договора
     /// Заказчик — организация, если все сотрудники с организацией из одной;
     /// если сотрудники без организации — физлицо (ФИО).
     /// Смешанные организации в одной группе — ошибка (договор юридически некорректен).
