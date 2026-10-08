@@ -71,7 +71,7 @@ public class EmployeeService : IEmployeeService
         employee.Post = dto.Post;
         employee.OrganizationId = dto.OrganizationId;
         employee.UpdatedAt = DateTimeOffset.UtcNow;
-        _auditService.SetAuditFields(employee);
+        _auditService.SetAuditFields(employee, isUpdate: true);
         await _repository.UpdateAsync(employee);
         await _repository.SaveChangesAsync();
         return MapToDto(employee);

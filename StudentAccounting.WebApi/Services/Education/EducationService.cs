@@ -69,7 +69,7 @@ public class EducationService : IEducationService
         education.FilePath = dto.FilePath;
         education.EmployeeId = dto.EmployeeId;
         education.UpdatedAt = DateTimeOffset.UtcNow;
-        _auditService.SetAuditFields(education);
+        _auditService.SetAuditFields(education, isUpdate: true);
         await _repository.UpdateAsync(education);
         await _repository.SaveChangesAsync();
         return MapToDto(education);
