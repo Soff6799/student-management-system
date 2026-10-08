@@ -4,6 +4,7 @@ using StudentAccounting.Domain;
 using StudentAccounting.Infrastructure.Data;
 using StudentAccounting.WebApi.DTOs.Common;
 using StudentAccounting.WebApi.DTOs.Organization;
+using StudentAccounting.WebApi.Services.Common;
 using DomainOrganization = global::StudentAccounting.Domain.Organization;
 
 
@@ -13,11 +14,15 @@ public class OrganizationService : IOrganizationService
 {
     private readonly IRepository<DomainOrganization> _repository;
     private readonly AppDbContext _context;
+    private readonly AuditService _auditService;
 
-    public OrganizationService(IRepository<DomainOrganization> repository, AppDbContext context)
+    public OrganizationService(IRepository<DomainOrganization> repository, 
+        AppDbContext context,
+        AuditService auditService)
     {
         _repository = repository;
         _context = context;
+        _auditService = auditService;
     }
 
     public async Task<IEnumerable<OrganizationDto>> GetAllAsync()
@@ -49,7 +54,7 @@ public class OrganizationService : IOrganizationService
             ContactPersonPosition = dto.ContactPersonPosition,
             Note = dto.Note
         };
-
+        _auditService.SetAuditFields(organization);
         await _repository.AddAsync(organization);
         await _repository.SaveChangesAsync();
 
@@ -75,7 +80,7 @@ public class OrganizationService : IOrganizationService
         organization.ContactPersonPosition = dto.ContactPersonPosition;
         organization.Note = dto.Note;
         organization.UpdatedAt = DateTimeOffset.UtcNow;
-
+        _auditService.SetAuditFields(organization, isUpdate: true);
         await _repository.UpdateAsync(organization);
         await _repository.SaveChangesAsync();
 
