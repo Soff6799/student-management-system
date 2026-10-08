@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudentAccounting.Infrastructure.Data;
+using StudentAccounting.WebApi.DTOs.Common;
 using StudentAccounting.WebApi.DTOs.Notifications;
 using static StudentAccounting.Domain.Enums;
 
@@ -14,7 +15,32 @@ public class NotificationService : INotificationService
         _context = context;
     }
 
-    public async Task<IEnumerable<NotificationDto>> GetAsync(string sortBy = "nextDate", bool descending = false)
+    public async Task<PagedResultDto<NotificationDto>> GetPagedAsync(NotificationListParams p)
+    {
+        var all = await BuildAsync(p);
+        var items = all
+            .Skip((p.Page - 1) * p.PageSize)
+            .Take(p.PageSize)
+            .ToList();
+
+        return new PagedResultDto<NotificationDto>
+        {
+            Items = items,
+            TotalCount = all.Count,
+            Page = p.Page,
+            PageSize = p.PageSize
+        };
+    }
+
+    public async Task<List<NotificationDto>> GetFilteredAsync(NotificationListParams p)
+    {
+        return await BuildAsync(p);
+    }
+
+    /// <summary>
+    /// Построение реестра: отбор по ТЗ 4.f.ii, фильтры, поиск, сортировка
+    /// </summary>
+    private async Task<List<NotificationDto>> BuildAsync(NotificationListParams p)
     {
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
@@ -26,19 +52,38 @@ public class NotificationService : INotificationService
                         && t.Employee.Status == EmployeeStatus.Active)
             .ToListAsync();
 
+        if (p.OrganizationId.HasValue)
+            trainings = trainings.Where(t => t.Employee.OrganizationId == p.OrganizationId.Value).ToList();
+
+        if (p.TrainingProgramId.HasValue)
+            trainings = trainings.Where(t => t.TrainingGroup.TrainingProgramId == p.TrainingProgramId.Value).ToList();
+
+        if (!string.IsNullOrWhiteSpace(p.Search))
+        {
+            var s = p.Search.Trim();
+            trainings = trainings.Where(t =>
+                t.Employee.LastName.Contains(s) ||
+                t.Employee.FirstName.Contains(s) ||
+                (t.TrainingGroup.TrainingProgram != null && t.TrainingGroup.TrainingProgram.Name.Contains(s)))
+                .ToList();
+        }
+
         var notifications = trainings
             .Select(t => new
             {
                 Training = t,
                 Days = t.NextTrainingDate!.Value.DayNumber - today.DayNumber,
-                Lead = t.TrainingGroup.TrainingProgram?.NotificationLeadTimeDays ?? 60
+                Lead = t.TrainingGroup.TrainingProgram != null
+                    ? t.TrainingGroup.TrainingProgram.NotificationLeadTimeDays
+                    : 60
             })
             .Where(x => x.Days <= x.Lead)
             .Select(x => new NotificationDto
             {
                 StudentTrainingId = x.Training.Id,
                 EmployeeId = x.Training.EmployeeId,
-                EmployeeFullName = $"{x.Training.Employee.LastName} {x.Training.Employee.FirstName} {x.Training.Employee.Patronymic}".Trim(),
+                EmployeeFullName = $"{x.Training.Employee.LastName} {x.Training.Employee.FirstName} " +
+                $"{x.Training.Employee.Patronymic}".Trim(),
                 OrganizationName = x.Training.Employee.Organization?.ShortName,
                 ProgramName = x.Training.TrainingGroup.TrainingProgram?.Name ?? string.Empty,
                 LastCompletionDate = x.Training.CompletionDate,
@@ -48,7 +93,7 @@ public class NotificationService : INotificationService
             })
             .ToList();
 
-        return Sort(notifications, sortBy, descending);
+        return Sort(notifications, p.SortBy ?? "nextDate", p.Descending).ToList();
     }
 
     /// <summary>

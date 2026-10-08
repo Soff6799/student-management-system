@@ -150,5 +150,20 @@ namespace StudentAccounting.Domain
             Methodologist
         }
 
+        /// <summary>
+        /// Цветовая индикация срочности уведомления о повторном обучении (ТЗ 4.f.iv).
+        /// Красный — менее 60 дней (включая просрочку);
+        /// жёлтый — от 60 до 120 дней;
+        /// зелёный — более 120 дней.
+        /// </summary>
+        public enum NotificationColor
+        {
+            [Description("Зеленый")]
+            Green,
+            [Description("Желтый")]
+            Yellow,
+            [Description("Красный")]
+            Red
+        }
     }
 }
