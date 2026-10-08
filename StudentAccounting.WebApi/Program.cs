@@ -7,6 +7,7 @@ using StudentAccounting.Dal.Contracts.interfaces;
 using StudentAccounting.Domain;
 using StudentAccounting.Infrastructure.Data;
 using StudentAccounting.WebApi.Services.Auth;
+using StudentAccounting.WebApi.Services.Common;
 using StudentAccounting.WebApi.Services.Contract;
 using StudentAccounting.WebApi.Services.Education;
 using StudentAccounting.WebApi.Services.Employee;
@@ -140,6 +141,7 @@ builder.Services.AddScoped<IExcelExportService, ExcelExportService>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<AuditService>();
 
 //генерация и хранение договоров
 builder.Services.AddSingleton(new StorageOptions
