@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using StudentAccounting.WebApi.DTOs.Employee;
 using StudentAccounting.WebApi.DTOs.Organization;
+using StudentAccounting.WebApi.DTOs.StudentTraining;
 using StudentAccounting.WebApi.DTOs.TrainingGroup;
 
 namespace StudentAccounting.WebApi.Services.Excel;
@@ -13,6 +14,7 @@ public interface IExcelExportService
     byte[] ExportOrganizations(IEnumerable<OrganizationDto> data);
     byte[] ExportEmployees(IEnumerable<EmployeeDto> data);
     byte[] ExportTrainingGroups(IEnumerable<TrainingGroupDto> data);
+    byte[] ExportGroupStudents(IEnumerable<StudentTrainingDto> data);
 }
 
 public class ExcelExportService : IExcelExportService
@@ -76,6 +78,25 @@ public class ExcelExportService : IExcelExportService
             ws.Cell(row, 4).Value = g.EndDate?.ToString("dd.MM.yyyy") ?? string.Empty;
             ws.Cell(row, 5).Value = g.Status.ToString();
             ws.Cell(row, 6).Value = g.StudentsCount;
+            row++;
+        }
+        ws.Columns().AdjustToContents();
+        return Save(workbook);
+    }
+
+    public byte[] ExportGroupStudents(IEnumerable<StudentTrainingDto> data)
+    {
+        using var workbook = new XLWorkbook();
+        var ws = workbook.Worksheets.Add("Обучающиеся группы");
+        WriteHeaders(ws, ["ФИО", "Группа", "Статус", "Дата завершения", "Следующее обучение"]);
+        var row = 2;
+        foreach (var s in data)
+        {
+            ws.Cell(row, 1).Value = s.EmployeeFullName ?? string.Empty;
+            ws.Cell(row, 2).Value = s.TrainingGroupName ?? string.Empty;
+            ws.Cell(row, 3).Value = s.Status.ToString();
+            ws.Cell(row, 4).Value = s.CompletionDate?.ToString("dd.MM.yyyy") ?? string.Empty;
+            ws.Cell(row, 5).Value = s.NextTrainingDate?.ToString("dd.MM.yyyy") ?? string.Empty;
             row++;
         }
         ws.Columns().AdjustToContents();
