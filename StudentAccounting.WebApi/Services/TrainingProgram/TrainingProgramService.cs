@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudentAccounting.Infrastructure.Data;
+using StudentAccounting.WebApi.DTOs.Common;
 using StudentAccounting.WebApi.DTOs.TrainingProgram;
 using static StudentAccounting.Domain.Enums;
 using DomainTrainingProgram = global::StudentAccounting.Domain.TrainingProgram;
@@ -118,6 +119,48 @@ public class TrainingProgramService : ITrainingProgramService
             GroupsCount = p.TrainingGroups.Count,
             CreatedAt = p.CreatedAt,
             UpdatedAt = p.UpdatedAt
+        };
+    }
+
+    public async Task<PagedResultDto<TrainingProgramDto>> GetPagedAsync(TrainingProgramListParams p)
+    {
+        var query = ApplySorting(ApplyFilters(_context.TrainingPrograms, p), p);
+        var totalCount = await query.CountAsync();
+        var items = await query
+            .Skip((p.Page - 1) * p.PageSize)
+            .Take(p.PageSize)
+            .Include(x => x.TrainingGroups)
+            .ToListAsync();
+
+        return new PagedResultDto<TrainingProgramDto>
+        {
+            Items = items.Select(MapToDto).ToList(),
+            TotalCount = totalCount,
+            Page = p.Page,
+            PageSize = p.PageSize
+        };
+    }
+
+    private static IQueryable<DomainTrainingProgram> ApplyFilters(IQueryable<DomainTrainingProgram> query, TrainingProgramListParams p)
+    {
+        if (p.Status.HasValue)
+            query = query.Where(x => x.Status == p.Status.Value);
+
+        if (!string.IsNullOrWhiteSpace(p.Search))
+        {
+            var s = p.Search.Trim();
+            query = query.Where(x => x.Name.Contains(s) || (x.Description != null && x.Description.Contains(s)));
+        }
+        return query;
+    }
+
+    private static IQueryable<DomainTrainingProgram> ApplySorting(IQueryable<DomainTrainingProgram> query, TrainingProgramListParams p)
+    {
+        return p.SortBy.ToLower() switch
+        {
+            "name" => p.Descending ? query.OrderByDescending(x => x.Name) : query.OrderBy(x => x.Name),
+            "cost" => p.Descending ? query.OrderByDescending(x => x.CostRubles) : query.OrderBy(x => x.CostRubles),
+            _ => p.Descending ? query.OrderByDescending(x => x.CreatedAt) : query.OrderBy(x => x.CreatedAt)
         };
     }
 }

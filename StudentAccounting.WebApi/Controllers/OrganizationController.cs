@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StudentAccounting.WebApi.DTOs.Common;
 using StudentAccounting.WebApi.DTOs.Organization;
+using StudentAccounting.WebApi.Services.Excel;
 using StudentAccounting.WebApi.Services.Organization;
 
 namespace StudentAccounting.WebApi.Controllers;
@@ -14,20 +16,21 @@ namespace StudentAccounting.WebApi.Controllers;
 public class OrganizationController : ControllerBase
 {
     private readonly IOrganizationService _service;
+    private readonly IExcelExportService _excel;
 
-    public OrganizationController(IOrganizationService service)
+    public OrganizationController(IOrganizationService service, IExcelExportService excel)
     {
         _service = service;
+        _excel = excel;
     }
 
     /// <summary>
     /// Получить все организации
     /// </summary>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<OrganizationDto>>> GetAll()
+    public async Task<ActionResult<PagedResultDto<OrganizationDto>>> GetAll([FromQuery] OrganizationListParams p)
     {
-        var organizations = await _service.GetAllAsync();
-        return Ok(organizations);
+        return Ok(await _service.GetPagedAsync(p));
     }
 
     /// <summary>
@@ -91,5 +94,18 @@ public class OrganizationController : ControllerBase
         {
             return NotFound();
         }
+    }
+
+    /// <summary>
+    /// Выгрузка организаций в XLSX с учётом фильтров и поиска 
+    /// </summary>
+    [HttpGet("export")]
+    public async Task<IActionResult> Export([FromQuery] OrganizationListParams p)
+    {
+        var data = await _service.GetFilteredAsync(p);
+        var file = _excel.ExportOrganizations(data);
+        return File(file,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            $"organizations_{DateTime.UtcNow:yyyyMMdd_HHmmss}.xlsx");
     }
 }

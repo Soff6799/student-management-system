@@ -7,6 +7,8 @@ public class StudentTrainingDto
     public Guid Id { get; set; }
     public Guid EmployeeId { get; set; }
     public string? EmployeeFullName { get; set; }
+    public string? OrganizationName { get; set; }
+    public string? Post { get; set; }
     public Guid TrainingGroupId { get; set; }
     public string? TrainingGroupName { get; set; }
     public TrainingStatus Status { get; set; }

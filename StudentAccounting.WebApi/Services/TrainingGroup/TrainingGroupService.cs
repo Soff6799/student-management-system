@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudentAccounting.Infrastructure.Data;
+using StudentAccounting.WebApi.DTOs.Common;
 using StudentAccounting.WebApi.DTOs.TrainingGroup;
 using static StudentAccounting.Domain.Enums;
 using DomainTrainingGroup = global::StudentAccounting.Domain.TrainingGroup;
@@ -15,14 +16,31 @@ public class TrainingGroupService : ITrainingGroupService
         _context = context;
     }
 
-    public async Task<IEnumerable<TrainingGroupDto>> GetAllAsync()
+    public async Task<PagedResultDto<TrainingGroupDto>> GetPagedAsync(TrainingGroupListParams p)
     {
-        var groups = await _context.TrainingGroups
-            .Include(g => g.TrainingProgram)
-            .Include(g => g.StudentTrainings)
+        var query = ApplySorting(ApplyFilters(WithIncludes(), p), p);
+        var totalCount = await query.CountAsync();
+        var items = await query
+            .Skip((p.Page - 1) * p.PageSize)
+            .Take(p.PageSize)
             .ToListAsync();
-        return groups.Select(MapToDto);
+
+        return new PagedResultDto<TrainingGroupDto>
+        {
+            Items = items.Select(MapToDto).ToList(),
+            TotalCount = totalCount,
+            Page = p.Page,
+            PageSize = p.PageSize
+        };
     }
+
+    public async Task<List<TrainingGroupDto>> GetFilteredAsync(TrainingGroupListParams p)
+    {
+        var items = await ApplySorting(ApplyFilters(WithIncludes(), p), p)
+            .ToListAsync();
+        return items.Select(MapToDto).ToList();
+    }
+
     public async Task<TrainingGroupDto?> GetByIdAsync(Guid id)
     {
         var group = await _context.TrainingGroups
@@ -102,6 +120,49 @@ public class TrainingGroupService : ITrainingGroupService
         await _context.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// Базовый запрос с загрузкой связанных данных
+    /// </summary>
+    private IQueryable<DomainTrainingGroup> WithIncludes()
+    {
+        return _context.TrainingGroups
+            .Include(g => g.TrainingProgram)
+            .Include(g => g.StudentTrainings);
+    }
+
+    /// <summary>
+    /// Применение поиска и фильтров списка групп
+    /// </summary>
+    private static IQueryable<DomainTrainingGroup> ApplyFilters(IQueryable<DomainTrainingGroup> query, TrainingGroupListParams p)
+    {
+        if (p.TrainingProgramId.HasValue)
+            query = query.Where(g => g.TrainingProgramId == p.TrainingProgramId.Value);
+
+        if (p.Status.HasValue)
+            query = query.Where(g => g.Status == p.Status.Value);
+
+        if (!string.IsNullOrWhiteSpace(p.Search))
+        {
+            var s = p.Search.Trim();
+            query = query.Where(g => g.GroupName.Contains(s) || g.TrainingProgram.Name.Contains(s));
+        }
+        return query;
+    }
+
+    /// <summary>
+    /// Применение сортировки списка групп по столбцам
+    /// </summary>
+    private static IQueryable<DomainTrainingGroup> ApplySorting(IQueryable<DomainTrainingGroup> query, TrainingGroupListParams p)
+    {
+        return p.SortBy.ToLower() switch
+        {
+            "groupname" => p.Descending ? query.OrderByDescending(g => g.GroupName) : query.OrderBy(g => g.GroupName),
+            "startdate" => p.Descending ? query.OrderByDescending(g => g.StartDate) : query.OrderBy(g => g.StartDate),
+            "status" => p.Descending ? query.OrderByDescending(g => g.Status) : query.OrderBy(g => g.Status),
+            _ => p.Descending ? query.OrderByDescending(g => g.CreatedAt) : query.OrderBy(g => g.CreatedAt)
+        };
+    }
+
     private static TrainingGroupDto MapToDto(DomainTrainingGroup g)
     {
         return new TrainingGroupDto
@@ -114,9 +175,9 @@ public class TrainingGroupService : ITrainingGroupService
             EndDate = g.EndDate,
             Status = g.Status,
             Note = g.Note,
-            StudentsCount = g.StudentTrainings.Count,
+            StudentsCount = g.StudentTrainings.Count(t => t.Status != TrainingStatus.DroppedOut),
             CreatedAt = g.CreatedAt,
-            UpdatedAt = g.UpdatedAt
+            UpdatedAt = g.UpdatedAt == default ? null : g.UpdatedAt
         };
     }
 }
