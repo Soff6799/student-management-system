@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Элементы решения/">
+    <File Path=".dockerignore" />
+  </Folder>
   <Project Path="StudentAccounting.Context/StudentAccounting.Context.csproj" />
   <Project Path="StudentAccounting.Dal.Contracts/StudentAccounting.Dal.Contracts.csproj" Id="334f376f-a896-40c1-b14d-2ffb396c0e99" />
   <Project Path="StudentAccounting.Domain/StudentAccounting.Domain.csproj" />
