@@ -13,8 +13,8 @@ namespace StudentAccounting.Infrastructure.Data
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
             // Строка подключения для миграций (должна совпадать с той, что в WebApi)
-            optionsBuilder.UseSqlServer(
-                "Server=localhost\\SQLEXPRESS;Database=StudentAccounting;Trusted_Connection=true;TrustServerCertificate=true;"
+            optionsBuilder.UseNpgsql(
+                "Host=localhost;Database=student_accounting;Username=postgres;Password=postgres123"
             );
 
             return new AppDbContext(optionsBuilder.Options);
